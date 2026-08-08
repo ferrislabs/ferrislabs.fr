@@ -1,0 +1,192 @@
+---
+title: Configuration
+description: Configure your Explainer project globally and per-app using @explainer/config.
+icon: settings
+order: 3
+---
+
+# Configuration
+
+Explainer uses a centralized configuration system via the `@explainer/config` package. It provides global defaults that can be overridden per-app.
+
+## Package structure
+
+```text
+packages/config/src/
+├── contracts.ts   # TypeScript interfaces (SiteConfig, Sponsor, FooterLink, I18nMessages)
+├── config.ts      # Default configuration values (single structure with i18n keys)
+├── i18n.ts        # Translations keyed by locale (flat key-value pairs)
+├── utils.ts       # Helper functions (defineConfig, formatTitle, t, resolveHref)
+└── index.ts       # Public exports
+```
+
+## Global configuration
+
+The default configuration is defined in `packages/config/src/config.ts`. Translatable properties reference i18n keys instead of containing raw strings:
+
+```ts
+import type { SiteConfig } from './contracts'
+
+export const defaultConfig: SiteConfig = {
+  name: 'Explainer',
+  titleTemplate: '%s — Explainer',
+  favicon: '/favicon.svg',
+  logo: '/logo.svg',
+  thumbnail: '/thumbnail.png',
+  twitterCard: 'summary_large_image',
+  ogType: 'website',
+  github: 'https://github.com/LeadcodeDev/explainer_v2',
+  sponsors: [/* ... */],
+  defaultLocale: 'en',
+  locales: ['en', 'fr'],
+  footer: {
+    description: 'footer.description',           // i18n key
+    columns: {
+      documentation: 'footer.columns.documentation', // i18n key
+      resources: 'footer.columns.resources',
+      community: 'footer.columns.community',
+    },
+    copyright: 'footer.copyright',
+    builtWith: 'footer.builtWith',
+    links: {
+      documentation: [
+        { label: 'footer.links.gettingStarted', href: '/{locale}/explainer/getting-started' },
+        // ...
+      ],
+      resources: [
+        { label: 'footer.links.github', href: 'https://github.com/...', external: true },
+        { label: 'footer.links.blog', href: '', appId: 'blog' },
+      ],
+      community: [
+        { label: 'footer.links.issues', href: 'https://github.com/.../issues', external: true },
+      ],
+    },
+  },
+}
+```
+
+Link `href` values support a `{locale}` placeholder that is resolved at render time.
+
+## SiteConfig reference
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `name` | `string` | Project name displayed in navbar and footer |
+| `titleTemplate` | `string` | Page title template. Use `%s` as placeholder (e.g. `%s — Explainer`) |
+| `favicon` | `string` | Path to the favicon file |
+| `logo` | `string` | Path to the logo file (used in navbar) |
+| `thumbnail` | `string` | Default OG image path |
+| `twitterCard` | `'summary' \| 'summary_large_image'` | Twitter card type |
+| `ogType` | `string` | Open Graph type |
+| `github` | `string` | GitHub repository URL |
+| `sponsors` | `Sponsor[]` | List of sponsors |
+| `defaultLocale` | `string` | Default locale for translations |
+| `locales` | `string[]` | Supported locales |
+| `footer` | `object` | Footer configuration with i18n keys and links |
+
+## Per-app override
+
+Each app can override the global configuration using `defineConfig()` in its `src/config.ts`:
+
+```ts [apps/docs/src/config.ts]
+import { defineConfig } from '@explainer/config'
+
+export const siteConfig = defineConfig({
+  titleTemplate: '%s — Explainer',
+})
+```
+
+```ts [apps/blog/src/config.ts]
+import { defineConfig } from '@explainer/config'
+
+export const siteConfig = defineConfig({
+  titleTemplate: '%s — Blog',
+})
+```
+
+`defineConfig()` deep-merges your overrides with the default configuration. You only need to specify the properties you want to change.
+
+## Internationalization (i18n)
+
+Translations are stored in `packages/config/src/i18n.ts` as flat key-value maps per locale:
+
+```ts
+import type { I18nMessages } from './contracts'
+
+export const i18n: Record<string, I18nMessages> = {
+  en: {
+    'description': 'Documentation boilerplate for developers.',
+    'footer.description': 'A modern documentation framework...',
+    'footer.columns.documentation': 'Documentation',
+    'footer.columns.resources': 'Resources',
+    'footer.columns.community': 'Community',
+    'footer.copyright': '© {year} Explainer. All rights reserved.',
+    'footer.builtWith': 'Built with {icon} using Astro',
+    'footer.links.gettingStarted': 'Getting Started',
+    // ...
+  },
+  fr: {
+    'description': 'Boilerplate de documentation pour les développeurs.',
+    'footer.description': 'Un framework de documentation moderne...',
+    'footer.columns.documentation': 'Documentation',
+    'footer.columns.resources': 'Ressources',
+    'footer.columns.community': 'Communauté',
+    'footer.copyright': '© {year} Explainer. Tous droits réservés.',
+    'footer.builtWith': 'Construit avec {icon} grâce à Astro',
+    'footer.links.gettingStarted': 'Premiers pas',
+    // ...
+  },
+}
+```
+
+Supported placeholders: `{year}` (current year), `{icon}` (heart icon), `{locale}` (in hrefs).
+
+### Using translations
+
+Use `t()` to resolve an i18n key for a given locale:
+
+```ts
+import { t } from '@explainer/config'
+
+t('fr', 'footer.description')
+// "Un framework de documentation moderne..."
+```
+
+Use `resolveHref()` to replace `{locale}` in URLs:
+
+```ts
+import { resolveHref } from '@explainer/config'
+
+resolveHref('/{locale}/explainer/getting-started', 'fr')
+// "/fr/explainer/getting-started"
+```
+
+If the requested locale is not found, `t()` falls back to `defaultLocale`.
+
+## Sponsors
+
+Sponsors are defined globally in the configuration:
+
+```ts
+sponsors: [
+  {
+    id: 'mineral',
+    name: 'Mineral',
+    href: 'https://mineral-dart.dev/',
+    logoUrl: 'https://mineral-dart.dev/logo.svg',
+    tier: 'silver', // 'gold' | 'silver' | 'bronze'
+  },
+]
+```
+
+Each sponsor has a `tier` property that determines its visual styling.
+
+## Utility functions
+
+| Function | Signature | Description |
+|----------|-----------|-------------|
+| `defineConfig` | `(overrides?) => SiteConfig` | Creates a config by deep-merging overrides with defaults |
+| `formatTitle` | `(config, pageTitle) => string` | Applies the title template to a page title |
+| `t` | `(locale, key) => string` | Resolves an i18n key for a given locale with fallback |
+| `resolveHref` | `(href, locale?) => string` | Replaces `{locale}` placeholder in URLs |
+| `getMessages` | `(locale?) => I18nMessages` | Returns the full message map for a locale |

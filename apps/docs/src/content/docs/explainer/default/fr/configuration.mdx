@@ -1,0 +1,192 @@
+---
+title: Configuration
+description: Configurez votre projet Explainer globalement et par application avec @explainer/config.
+icon: settings
+order: 3
+---
+
+# Configuration
+
+Explainer utilise un systeme de configuration centralise via le package `@explainer/config`. Il fournit des valeurs par defaut globales qui peuvent etre surchargees par application.
+
+## Structure du package
+
+```text
+packages/config/src/
+├── contracts.ts   # Interfaces TypeScript (SiteConfig, Sponsor, FooterLink, I18nMessages)
+├── config.ts      # Valeurs de configuration par defaut (structure unique avec cles i18n)
+├── i18n.ts        # Traductions par locale (cles a plat)
+├── utils.ts       # Fonctions utilitaires (defineConfig, formatTitle, t, resolveHref)
+└── index.ts       # Exports publics
+```
+
+## Configuration globale
+
+La configuration par defaut est definie dans `packages/config/src/config.ts`. Les proprietes traduisibles font reference a des cles i18n au lieu de contenir des chaines brutes :
+
+```ts
+import type { SiteConfig } from './contracts'
+
+export const defaultConfig: SiteConfig = {
+  name: 'Explainer',
+  titleTemplate: '%s — Explainer',
+  favicon: '/favicon.svg',
+  logo: '/logo.svg',
+  thumbnail: '/thumbnail.png',
+  twitterCard: 'summary_large_image',
+  ogType: 'website',
+  github: 'https://github.com/LeadcodeDev/explainer_v2',
+  sponsors: [/* ... */],
+  defaultLocale: 'en',
+  locales: ['en', 'fr'],
+  footer: {
+    description: 'footer.description',           // cle i18n
+    columns: {
+      documentation: 'footer.columns.documentation', // cle i18n
+      resources: 'footer.columns.resources',
+      community: 'footer.columns.community',
+    },
+    copyright: 'footer.copyright',
+    builtWith: 'footer.builtWith',
+    links: {
+      documentation: [
+        { label: 'footer.links.gettingStarted', href: '/{locale}/explainer/getting-started' },
+        // ...
+      ],
+      resources: [
+        { label: 'footer.links.github', href: 'https://github.com/...', external: true },
+        { label: 'footer.links.blog', href: '', appId: 'blog' },
+      ],
+      community: [
+        { label: 'footer.links.issues', href: 'https://github.com/.../issues', external: true },
+      ],
+    },
+  },
+}
+```
+
+Les `href` des liens supportent un placeholder `{locale}` qui est resolu au rendu.
+
+## Reference SiteConfig
+
+| Propriete | Type | Description |
+|-----------|------|-------------|
+| `name` | `string` | Nom du projet affiche dans la navbar et le footer |
+| `titleTemplate` | `string` | Template de titre de page. Utilisez `%s` comme placeholder (ex. `%s — Explainer`) |
+| `favicon` | `string` | Chemin vers le fichier favicon |
+| `logo` | `string` | Chemin vers le fichier logo (utilise dans la navbar) |
+| `thumbnail` | `string` | Chemin par defaut de l'image OG |
+| `twitterCard` | `'summary' \| 'summary_large_image'` | Type de carte Twitter |
+| `ogType` | `string` | Type Open Graph |
+| `github` | `string` | URL du depot GitHub |
+| `sponsors` | `Sponsor[]` | Liste des sponsors |
+| `defaultLocale` | `string` | Locale par defaut pour les traductions |
+| `locales` | `string[]` | Locales supportees |
+| `footer` | `object` | Configuration du footer avec cles i18n et liens |
+
+## Surcharge par application
+
+Chaque application peut surcharger la configuration globale avec `defineConfig()` dans son `src/config.ts` :
+
+```ts [apps/docs/src/config.ts]
+import { defineConfig } from '@explainer/config'
+
+export const siteConfig = defineConfig({
+  titleTemplate: '%s — Explainer',
+})
+```
+
+```ts [apps/blog/src/config.ts]
+import { defineConfig } from '@explainer/config'
+
+export const siteConfig = defineConfig({
+  titleTemplate: '%s — Blog',
+})
+```
+
+`defineConfig()` fusionne en profondeur vos surcharges avec la configuration par defaut. Vous n'avez besoin de specifier que les proprietes que vous souhaitez modifier.
+
+## Internationalisation (i18n)
+
+Les traductions sont stockees dans `packages/config/src/i18n.ts` sous forme de cles a plat par locale :
+
+```ts
+import type { I18nMessages } from './contracts'
+
+export const i18n: Record<string, I18nMessages> = {
+  en: {
+    'description': 'Documentation boilerplate for developers.',
+    'footer.description': 'A modern documentation framework...',
+    'footer.columns.documentation': 'Documentation',
+    'footer.columns.resources': 'Resources',
+    'footer.columns.community': 'Community',
+    'footer.copyright': '© {year} Explainer. All rights reserved.',
+    'footer.builtWith': 'Built with {icon} using Astro',
+    'footer.links.gettingStarted': 'Getting Started',
+    // ...
+  },
+  fr: {
+    'description': 'Boilerplate de documentation pour les développeurs.',
+    'footer.description': 'Un framework de documentation moderne...',
+    'footer.columns.documentation': 'Documentation',
+    'footer.columns.resources': 'Ressources',
+    'footer.columns.community': 'Communauté',
+    'footer.copyright': '© {year} Explainer. Tous droits réservés.',
+    'footer.builtWith': 'Construit avec {icon} grâce à Astro',
+    'footer.links.gettingStarted': 'Premiers pas',
+    // ...
+  },
+}
+```
+
+Placeholders supportes : `{year}` (annee en cours), `{icon}` (icone coeur), `{locale}` (dans les hrefs).
+
+### Utiliser les traductions
+
+Utilisez `t()` pour resoudre une cle i18n pour une locale donnee :
+
+```ts
+import { t } from '@explainer/config'
+
+t('fr', 'footer.description')
+// "Un framework de documentation moderne..."
+```
+
+Utilisez `resolveHref()` pour remplacer `{locale}` dans les URLs :
+
+```ts
+import { resolveHref } from '@explainer/config'
+
+resolveHref('/{locale}/explainer/getting-started', 'fr')
+// "/fr/explainer/getting-started"
+```
+
+Si la locale demandee n'est pas trouvee, `t()` utilise la `defaultLocale`.
+
+## Sponsors
+
+Les sponsors sont definis globalement dans la configuration :
+
+```ts
+sponsors: [
+  {
+    id: 'mineral',
+    name: 'Mineral',
+    href: 'https://mineral-dart.dev/',
+    logoUrl: 'https://mineral-dart.dev/logo.svg',
+    tier: 'silver', // 'gold' | 'silver' | 'bronze'
+  },
+]
+```
+
+Chaque sponsor a une propriete `tier` qui determine son style visuel.
+
+## Fonctions utilitaires
+
+| Fonction | Signature | Description |
+|----------|-----------|-------------|
+| `defineConfig` | `(overrides?) => SiteConfig` | Cree une config en fusionnant les surcharges avec les valeurs par defaut |
+| `formatTitle` | `(config, pageTitle) => string` | Applique le template de titre a un titre de page |
+| `t` | `(locale, key) => string` | Resout une cle i18n pour une locale avec fallback |
+| `resolveHref` | `(href, locale?) => string` | Remplace le placeholder `{locale}` dans les URLs |
+| `getMessages` | `(locale?) => I18nMessages` | Retourne la map de messages pour une locale |

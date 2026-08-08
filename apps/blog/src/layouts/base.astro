@@ -1,0 +1,71 @@
+---
+import '../styles/globals.css'
+import { ClientRouter } from 'astro:transitions'
+import { BlogNavbar } from '../components/blog-navbar'
+import { Footer } from '@explainer/ui'
+import { formatTitle } from '@explainer/config'
+import { siteConfig } from '../config'
+import { useTranslations } from '../i18n/utils'
+
+interface Props {
+  title: string
+  description?: string
+  thumbnail?: string
+  locale?: string
+  locales?: string[]
+  localeSwitchUrls?: Record<string, string>
+}
+
+const { title, description = siteConfig.description, thumbnail, locale = 'en', locales = ['en'], localeSwitchUrls = {} } = Astro.props
+const t = useTranslations(locale)
+const thumbnailUrl = thumbnail ?? `${Astro.url.pathname.replace(/\/$/, '')}/thumbnail.png`
+
+const appUrlOverrides = {
+  website: import.meta.env.PUBLIC_WEBSITE_URL,
+  docs: import.meta.env.PUBLIC_DOCS_URL,
+  blog: import.meta.env.PUBLIC_BLOG_URL,
+}
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href={siteConfig.favicon} />
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={thumbnailUrl} />
+    <meta property="og:type" content={siteConfig.ogType} />
+    <meta name="twitter:card" content={siteConfig.twitterCard} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={thumbnailUrl} />
+    <title>{formatTitle(siteConfig, title)}</title>
+    <ClientRouter />
+    <script is:inline>
+      (function () {
+        var theme = localStorage.getItem('theme') || 'system'
+        var isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        document.documentElement.classList.toggle('dark', isDark)
+      })()
+    </script>
+    <script is:inline>
+      document.addEventListener('astro:after-swap', function () {
+        var theme = localStorage.getItem('theme') || 'system'
+        var isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        document.documentElement.classList.toggle('dark', isDark)
+      })
+    </script>
+  </head>
+  <body class="min-h-screen antialiased">
+    <BlogNavbar activePath={Astro.url.pathname} appUrlOverrides={appUrlOverrides} locale={locale} locales={locales} localeSwitchUrls={localeSwitchUrls} client:load transition:persist />
+    <main class="mx-auto max-w-6xl px-6 py-10">
+      <slot />
+    </main>
+    <div class="mx-auto max-w-6xl px-6">
+      <Footer config={siteConfig} locale={locale} appUrlOverrides={appUrlOverrides} client:load />
+    </div>
+  </body>
+</html>

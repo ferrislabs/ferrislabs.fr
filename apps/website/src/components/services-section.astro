@@ -1,0 +1,116 @@
+---
+import { Icon } from "@iconify/react";
+import { Button } from "@explainer/ui";
+
+const services = [
+  {
+    icon: "mdi:cube-outline",
+    title: "Ingénierie produit",
+    description: "Vous avez un process métier coûteux, manuel, ou porté par un outil qui ne suit plus. On conçoit et on construit le logiciel sur-mesure qui le remplace. Il est pensé pour durer, pas pour être une rustine.",
+    examples: [
+      "Applications métier sur-mesure",
+      "Automatisation de tâches manuelles",
+      "Refonte d'outils internes vieillissants",
+    ],
+  },
+  {
+    icon: "mdi:robot-outline",
+    title: "IA appliquée à la production",
+    description: "On construit des pipelines d'agents IA qui exécutent un vrai travail dans votre système d'information, pas une démo. La sécurité et la gestion des accès sont pensées dès la conception, pas ajoutées après coup.",
+  },
+  {
+    icon: "mdi:shield-key-outline",
+    title: "IAM et sécurité",
+    description: "Architectures d'identité et de gestion des accès robustes (Keycloak, OIDC/OAuth2), y compris pour les systèmes agentiques. Quand la réglementation, NIS2 ou une autre, s'applique à votre contexte, on l'intègre. Elle n'est jamais notre point de départ.",
+  },
+  {
+    icon: "mdi:swap-horizontal",
+    title: "Transformation numérique",
+    description: "Migration d'outils, refonte de process, modernisation de systèmes existants. On ne réécrit pas ce qui fonctionne juste pour le principe.",
+  },
+];
+---
+
+<section id="services" class="relative w-full py-16 sm:py-24 lg:py-32">
+  <div class="relative w-full max-w-6xl mx-auto px-5">
+    <div class="text-center mb-16 animate-fade-up-in">
+      <p class="text-sm font-semibold text-primary uppercase tracking-wide mb-3">
+        Ce qu'on fait
+      </p>
+      <h2 class="text-3xl font-semibold text-foreground sm:text-4xl">
+        Ce qu'on construit, dans l'ordre où ça compte
+      </h2>
+      <p class="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto text-balance">
+        FerrisLabs conçoit du logiciel sur-mesure, des systèmes d'IA en production et des architectures d'identité robustes, avec la rigueur d'ingénierie qui a produit Ferriskey. La conformité réglementaire, quand elle est pertinente, vient en complément de ce travail, jamais en remplacement.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 lg:grid-rows-2 gap-5">
+      {services.map((service, index) => (
+        <div
+          class:list={[
+            "border rounded-[4px] bg-primary/5 transition-transform duration-300 hover:-translate-y-1",
+            index === 0 ? "lg:col-span-2 lg:row-span-2 relative overflow-hidden" : "",
+            index === 1 ? "lg:col-span-2" : "",
+          ]}
+        >
+          {index === 0 && (
+            <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+              <div
+                class="absolute inset-0 opacity-40"
+                style="background-image: linear-gradient(to right, var(--color-border) 1px, transparent 1px), linear-gradient(to bottom, var(--color-border) 1px, transparent 1px); background-size: 40px 40px; mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, black 0%, transparent 80%); -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, black 0%, transparent 80%);"
+              >
+              </div>
+            </div>
+          )}
+          <div class:list={["relative flex flex-col h-full", index === 0 ? "p-8 gap-6" : "p-6 gap-4"]}>
+            <div
+              class:list={[
+                "flex items-center justify-center shrink-0 rounded-[2px] bg-primary/10",
+                index === 0 ? "size-14" : "size-11",
+              ]}
+            >
+              <Icon icon={service.icon} className={index === 0 ? "size-7 text-primary" : "size-5 text-primary"} client:load />
+            </div>
+            <div>
+              <h3 class:list={["font-semibold text-foreground", index === 0 ? "text-2xl" : "text-base"]}>
+                {service.title}
+              </h3>
+              <p class:list={["text-muted-foreground leading-relaxed", index === 0 ? "text-base mt-3" : "text-sm mt-1.5"]}>
+                {service.description}
+              </p>
+            </div>
+            {index === 0 && service.examples && (
+              <ul class="flex flex-col gap-2.5">
+                {service.examples.map((example) => (
+                  <li class="flex items-center gap-2 text-sm text-foreground">
+                    <Icon icon="mdi:check-circle-outline" className="size-4 text-primary shrink-0" client:load />
+                    <span>{example}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {index === 0 && (
+              <a
+                href="#ferriskey"
+                class="mt-auto inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+              >
+                <span>Voir comment on construit</span>
+                <Icon icon="mdi:arrow-right" className="size-3.5" client:load />
+              </a>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div class="mt-10 flex justify-center">
+      <Button size="lg" className="cursor-pointer rounded-[3px]" client:load>
+        <a href="mailto:contact@ferrislabs.fr" class="flex gap-2">
+          <span>Décrire mon besoin</span>
+          <Icon icon="mdi:arrow-right" aria-hidden="true" className="size-5" client:load />
+        </a>
+      </Button>
+    </div>
+  </div>
+</section>

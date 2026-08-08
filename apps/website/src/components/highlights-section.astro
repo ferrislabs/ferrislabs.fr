@@ -1,0 +1,76 @@
+---
+import { Icon } from "@iconify/react";
+
+const highlights = [
+  { icon: "mdi:eye-outline", title: "Pas une boîte noire", description: "Le code de Ferriskey, notre plateforme d'identité et de gestion des accès, est public. Vous pouvez lire notre architecture et nos choix techniques avant de nous confier les vôtres." },
+  { icon: "mdi:language-rust", title: "Rust, architecture hexagonale", description: "Ferriskey est construit avec les mêmes standards que ce qu'on livre en mission. Ce n'est pas une version dégradée réservée aux clients." },
+  { icon: "mdi:hammer-wrench", title: "On maintient ce qu'on construit", description: "Ferriskey n'est pas un projet lancé puis abandonné : on le fait évoluer, comme on s'engage à le faire pour votre logiciel." },
+];
+---
+
+<section id="about" class="relative w-full py-16 sm:py-24 lg:py-32">
+  <!-- Decorative grid -->
+  <div
+    class="absolute inset-0 -z-10 pointer-events-none"
+    style="clip-path: inset(0 -100vw -100vh -100vw);"
+    aria-hidden="true"
+  >
+    <div
+      class="absolute inset-0 opacity-[0.06]"
+      style="background-image: linear-gradient(to right, var(--color-primary) 1px, transparent 1px), linear-gradient(to bottom, var(--color-primary) 1px, transparent 1px); background-size: 75px 75px; mask-image: radial-gradient(ellipse 70% 60% at 30% 30%, black 0%, transparent 75%); -webkit-mask-image: radial-gradient(ellipse 70% 60% at 30% 30%, black 0%, transparent 75%);"
+    >
+    </div>
+
+    <div class="absolute top-8 right-1/3 size-2.5 border border-primary/20">
+    </div>
+    <div
+      class="absolute bottom-1/4 left-[20%] size-2 bg-primary/10"
+    >
+    </div>
+    <div
+      class="absolute top-[60%] right-[8%] size-1.5 bg-primary/10"
+    >
+    </div>
+  </div>
+
+  <!-- Content -->
+    <div class="relative w-full max-w-6xl mx-auto px-5">
+      <div class="text-center mb-16 animate-fade-up-in">
+        <p class="text-sm font-semibold text-primary uppercase tracking-wide mb-3">
+          Pourquoi nous
+        </p>
+        <h2 class="text-3xl font-semibold text-foreground sm:text-4xl">
+          Notre niveau d'ingénierie ne se promet pas, il se publie
+        </h2>
+        <p class="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto text-balance">
+          FerrisLabs a été fondée par Nathael Bonnal et Baptiste Parmantier, deux ingénieurs logiciels formés aux systèmes distribués et aux architectures hexagonales en Rust. Plutôt que de vous décrire notre expertise, on préfère vous montrer le code.
+        </p>
+      </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+      {
+        highlights.map((item) => (
+          <div class="border rounded-[4px] bg-background animate-fade-up-in animation-delay-200">
+            <div class="bg-primary/5 p-8 flex flex-col gap-5 h-full">
+              <div class="flex items-center justify-center size-12 rounded-[2px] bg-primary/10">
+                <Icon
+                  icon={item.icon}
+                  className="size-6 text-primary"
+                  client:load
+                />
+              </div>
+              <div>
+                <h3 class="text-xl font-semibold text-foreground">
+                  {item.title}
+                </h3>
+                <p class="text-sm text-muted-foreground mt-2 leading-relaxed">
+                  {item.description}
+                </p>
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

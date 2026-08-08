@@ -1,0 +1,54 @@
+---
+import { Icon } from "@iconify/react";
+
+const logos = [
+  { light: "/logos/france-nuage.svg", alt: "France Nuage" },
+  { light: "/logos/cloud-iam-light.svg", dark: "/logos/cloud-iam-dark.svg", alt: "Cloud IAM" },
+  { light: "/logos/anthropic-light.svg", dark: "/logos/anthropic-dark.svg", alt: "Anthropic" },
+  { light: "/logos/natalia.svg", alt: "Natalia" },
+  { light: "/logos/gilded-health.svg", alt: "Gilded Health" },
+];
+---
+
+<section class="w-full max-w-6xl mx-auto px-5 py-10 sm:py-14">
+  <p class="text-center text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-8">
+    Ils nous font confiance
+  </p>
+  <div class="flex flex-wrap items-center justify-center gap-x-12 gap-y-8">
+    {logos.map((logo) =>
+      logo.light ? (
+        <div class="flex h-16 w-40 items-center justify-center">
+          <img
+            src={logo.light}
+            alt={logo.alt}
+            class:list={["h-12 w-auto max-w-36", logo.dark && "theme-logo-light"]}
+          />
+          {logo.dark && (
+            <img src={logo.dark} alt={logo.alt} class="theme-logo-dark h-12 w-auto max-w-36" />
+          )}
+        </div>
+      ) : (
+        <div
+          class="flex h-16 w-40 items-center justify-center rounded-[3px] border border-dashed border-muted-foreground/25 text-muted-foreground/40"
+          aria-hidden="true"
+        >
+          <Icon icon={logo.icon} className="size-8" client:load />
+        </div>
+      )
+    )}
+  </div>
+</section>
+
+<style>
+  .theme-logo-dark {
+    display: none;
+  }
+
+  :global(html.dark) .theme-logo-light {
+    display: none;
+  }
+
+  :global(html.dark) .theme-logo-dark {
+    display: block;
+  }
+</style>

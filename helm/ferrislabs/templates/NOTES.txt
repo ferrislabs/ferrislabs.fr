@@ -1,0 +1,8 @@
+FerrisLabs applications deployed.
+
+Enabled apps:
+{{- range $app := .Values.apps }}
+{{- if $app.enabled }}
+  - {{ $app.name }}
+{{- end }}
+{{- end }}

@@ -1,0 +1,118 @@
+---
+import { Icon } from '@iconify/react'
+
+const team = [
+  {
+    name: 'Nathael Bonnal',
+    role: 'Ingénieur logiciel',
+    image: '/teams/nathael.jpg',
+    description:
+      'Pilote la vision, la direction produit et les fondations techniques de l\'écosystème Ferris.',
+    links: [
+      {
+        label: 'GitHub',
+        href: 'https://github.com/nathaelb',
+        icon: 'mdi:github',
+      },
+      {
+        label: 'LinkedIn',
+        href: 'https://www.linkedin.com/in/nathael-bonnal',
+        icon: 'mdi:linkedin',
+      },
+    ],
+  },
+  {
+    name: 'Baptiste Parmantier',
+    role: 'Ingénieur logiciel',
+    image: '/teams/baptiste.jpeg',
+    description:
+      'Contribue au produit, à l\'implémentation et à l\'évolution quotidienne des projets FerrisLabs.',
+    links: [
+      {
+        label: 'GitHub',
+        href: 'https://github.com/LeadcodeDev',
+        icon: 'mdi:github',
+      },
+      {
+        label: 'LinkedIn',
+        href: 'https://www.linkedin.com/in/baptiste-parmantier',
+        icon: 'mdi:linkedin',
+      },
+    ],
+  },
+  {
+    name: 'Luis Rubiera',
+    role: 'CTO Cloud IAM',
+    image: '/teams/luis.jpeg',
+    description:
+      'Pilote la stratégie cloud et IAM de l\'écosystème Ferris, avec un focus sur l\'architecture d\'identité, la fiabilité de la plateforme et des fondations d\'accès qui tiennent à l\'échelle.',
+    links: [
+      {
+        label: 'LinkedIn',
+        href: 'https://www.linkedin.com/in/luis-daniel-rubiera-guzman/',
+        icon: 'mdi:linkedin',
+      },
+    ],
+  },
+]
+---
+
+<section id="team" class="w-full max-w-6xl mx-auto px-5 py-16 sm:py-24 lg:py-32">
+  <div class="text-center mb-16 animate-fade-up-in">
+    <p class="text-sm font-semibold text-primary uppercase tracking-wide mb-3">
+      Équipe
+    </p>
+    <h2 class="text-3xl font-semibold text-foreground sm:text-4xl">
+      Une équipe qui construit du logiciel open source fait pour durer
+    </h2>
+    <p class="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto text-balance">
+      FerrisLabs est une organisation ouverte. On construit d'abord les fondations, puis on élargit l'écosystème autour de principes partagés : interopérabilité, auto-hébergement et maintenabilité à long terme.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+    {team.map((member) => (
+      <article class="group relative overflow-hidden rounded-[4px] border bg-background animate-fade-up-in animation-delay-200">
+        <div class="relative aspect-[4/5] overflow-hidden">
+          <img
+            src={member.image}
+            alt={member.name}
+            class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            loading="lazy"
+          />
+
+          <div class="absolute inset-0 bg-linear-to-t from-black/92 via-black/55 to-black/10 opacity-90 transition-opacity duration-300 group-hover:opacity-100"></div>
+
+          <div class="absolute inset-x-0 bottom-0 p-6 sm:p-8 transition-transform duration-400 ease-out group-hover:translate-y-0">
+            <div class="translate-y-8 transition-transform duration-400 ease-out group-hover:translate-y-0">
+              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-white/80">
+                {member.role}
+              </p>
+              <h3 class="mt-2 text-3xl font-semibold text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.6)]">
+                {member.name}
+              </h3>
+              <p class="mt-3 max-w-md text-sm leading-relaxed text-white/78 opacity-0 transition duration-300 group-hover:opacity-100">
+                {member.description}
+              </p>
+
+              <div class="mt-5 flex flex-wrap gap-3 opacity-0 transition duration-300 group-hover:opacity-100">
+                {member.links.map((link) => (
+                  <a
+                    href={link.href}
+                    class="inline-flex items-center gap-2 rounded-[3px] border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/20"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={link.label}
+                  >
+                    <Icon icon={link.icon} className="size-4" client:load />
+                    <span>{link.label}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>

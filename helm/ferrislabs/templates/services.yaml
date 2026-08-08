@@ -1,0 +1,24 @@
+{{- range $app := .Values.apps }}
+{{- if $app.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ferrislabs.fullname" $ }}-{{ $app.name }}
+  labels:
+    {{- include "ferrislabs.labels" (dict "root" $ "app" $app) | nindent 4 }}
+  {{- with $app.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ $app.service.type }}
+  selector:
+    {{- include "ferrislabs.selectorLabels" (dict "root" $ "app" $app) | nindent 4 }}
+  ports:
+    - name: http
+      port: {{ $app.service.port }}
+      targetPort: {{ $app.service.targetPort }}
+      protocol: TCP
+{{- end }}
+{{- end }}

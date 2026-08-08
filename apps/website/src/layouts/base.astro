@@ -1,0 +1,52 @@
+---
+import '../styles/globals.css'
+import { ClientRouter } from 'astro:transitions'
+import { formatTitle } from '@explainer/config'
+import { siteConfig } from '../config'
+
+interface Props {
+  title: string
+  description?: string
+  thumbnail?: string
+}
+
+const { title, description, thumbnail } = Astro.props
+const thumbnailUrl = thumbnail ?? siteConfig.thumbnail
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href={siteConfig.favicon} />
+    <meta name="description" content={description ?? siteConfig.description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description ?? siteConfig.description} />
+    <meta property="og:image" content={thumbnailUrl} />
+    <meta property="og:type" content={siteConfig.ogType} />
+    <meta name="twitter:card" content={siteConfig.twitterCard} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description ?? siteConfig.description} />
+    <meta name="twitter:image" content={thumbnailUrl} />
+    <title>{formatTitle(siteConfig, title)}</title>
+    <ClientRouter />
+    <script is:inline>
+      (function () {
+        var theme = localStorage.getItem('theme') || 'system'
+        var isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        document.documentElement.classList.toggle('dark', isDark)
+      })()
+    </script>
+    <script is:inline>
+      document.addEventListener('astro:after-swap', function () {
+        var theme = localStorage.getItem('theme') || 'system'
+        var isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        document.documentElement.classList.toggle('dark', isDark)
+      })
+    </script>
+  </head>
+  <body class="min-h-screen antialiased">
+    <slot />
+  </body>
+</html>

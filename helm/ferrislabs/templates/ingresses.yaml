@@ -1,0 +1,37 @@
+{{- range $app := .Values.apps }}
+{{- if and $.Values.ingress.enabled $app.enabled $app.ingress.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "ferrislabs.fullname" $ }}-{{ $app.name }}
+  labels:
+    {{- include "ferrislabs.labels" (dict "root" $ "app" $app) | nindent 4 }}
+  annotations:
+    {{- with $.Values.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- with $app.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  ingressClassName: {{ $.Values.ingress.className }}
+  rules:
+    - host: {{ $app.ingress.host | quote }}
+      http:
+        paths:
+          - path: {{ $app.ingress.path }}
+            pathType: {{ $app.ingress.pathType }}
+            backend:
+              service:
+                name: {{ include "ferrislabs.fullname" $ }}-{{ $app.name }}
+                port:
+                  number: {{ $app.service.port }}
+  {{- if and $.Values.ingress.tls.enabled $app.ingress.tls.enabled }}
+  tls:
+    - hosts:
+        - {{ $app.ingress.host | quote }}
+      secretName: {{ $app.ingress.tls.secretName }}
+  {{- end }}
+{{- end }}
+{{- end }}

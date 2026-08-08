@@ -1,0 +1,116 @@
+nameOverride: ""
+fullnameOverride: ""
+
+commonLabels: {}
+
+imagePullSecrets: []
+
+podAnnotations: {}
+
+deploymentStrategy:
+  type: RollingUpdate
+
+serviceAccount:
+  create: false
+  annotations: {}
+  name: ""
+
+ingress:
+  enabled: true
+  className: traefik
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  tls:
+    enabled: true
+
+# Kubernetes Gateway API support, as an alternative or complement to ingress.
+# Disabled by default so existing installs keep using ingress unchanged.
+gatewayApi:
+  enabled: false
+  annotations: {}
+
+  # References to the Gateway(s) each HTTPRoute attaches to.
+  # Leave empty to attach to the Gateway created below (gateway.create: true).
+  parentRefs: []
+    # - name: my-gateway
+    #   namespace: gateway-system
+    #   sectionName: https
+
+  # Optionally have this chart create the Gateway resource itself.
+  # Set to false to attach to a Gateway managed elsewhere in the cluster.
+  gateway:
+    create: false
+    gatewayClassName: traefik
+    annotations: {}
+    listeners:
+      - name: http
+        protocol: HTTP
+        port: 80
+        allowedRoutes:
+          namespaces:
+            from: Same
+
+apps:
+  - name: website
+    enabled: true
+    replicaCount: 1
+
+    image:
+      repository: ghcr.io/ferrislabs/ferrislabs-website
+      tag: sha-f7de2a7
+      pullPolicy: IfNotPresent
+
+    containerPort: 8080
+
+    command: []
+    args: []
+
+    env: []
+    envFrom: []
+
+    podAnnotations: {}
+    podLabels: {}
+
+    resources: {}
+
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+
+    service:
+      type: ClusterIP
+      port: 80
+      targetPort: 8080
+      annotations: {}
+
+    ingress:
+      enabled: true
+      host: ferrislabs.fr
+      path: /
+      pathType: Prefix
+      annotations: {}
+      tls:
+        enabled: true
+        secretName: ferrislabs-fr-tls
+
+    httpRoute:
+      enabled: true
+      hostnames:
+        - ferrislabs.fr
+      path: /
+      pathType: PathPrefix
+      annotations: {}
+
+    livenessProbe:
+      httpGet:
+        path: /
+        port: http
+      initialDelaySeconds: 10
+      periodSeconds: 20
+
+    readinessProbe:
+      httpGet:
+        path: /
+        port: http
+      initialDelaySeconds: 5
+      periodSeconds: 10

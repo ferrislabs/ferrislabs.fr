@@ -1,0 +1,45 @@
+---
+import Base from '../layouts/base.astro'
+import { WebsiteNavbar } from '../components/website-navbar'
+import HeroSection from '../components/hero-section.astro'
+import TrustedBySection from '../components/trusted-by-section.astro'
+import FerriskeySpotlightSection from '../components/ferriskey-spotlight-section.astro'
+import MestierSpotlightSection from '../components/mestier-spotlight-section.astro'
+import ServicesSection from '../components/services-section.astro'
+import HighlightsSection from '../components/highlights-section.astro'
+import CtaSection from '../components/cta-section.astro'
+import ComplianceSection from '../components/compliance-section.astro'
+import TeamSection from '../components/team-section.astro'
+import { siteConfig } from '../config'
+---
+
+<Base
+  title="FerrisLabs"
+  description="FerrisLabs builds Ferriskey, an open source IAM platform, and Mestier, an open source alternative to Google Workspace for companies. We also offer consulting, interventions, and training on Rust, IAM, and Kubernetes."
+  thumbnail="/thumbnail.png"
+>
+  <WebsiteNavbar client:load transition:persist />
+
+  <HeroSection />
+  <TrustedBySection />
+  <FerriskeySpotlightSection />
+  <MestierSpotlightSection />
+  <ServicesSection />
+  <HighlightsSection />
+  <TeamSection />
+  <CtaSection />
+  <ComplianceSection />
+
+  <footer class="mx-auto max-w-6xl px-6 pb-10 pt-4">
+    <div class="border-t pt-8 text-sm text-muted-foreground flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <p>{siteConfig.name} is building open source infrastructure for modern organizations.</p>
+      <div class="flex items-center gap-4">
+        <a href="#ferriskey" class="hover:text-foreground transition-colors">Ferriskey</a>
+        <a href="#mestier" class="hover:text-foreground transition-colors">Mestier</a>
+        <a href="#services" class="hover:text-foreground transition-colors">Ce qu'on fait</a>
+        <a href="#team" class="hover:text-foreground transition-colors">Équipe</a>
+        <a href={siteConfig.github} target="_blank" rel="noopener noreferrer" class="hover:text-foreground transition-colors">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</Base>

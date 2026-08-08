@@ -1,0 +1,16 @@
+{{- if and .Values.gatewayApi.enabled .Values.gatewayApi.gateway.create }}
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: {{ include "ferrislabs.fullname" . }}
+  labels:
+    {{- include "ferrislabs.labels" (dict "root" . "app" (dict "name" "gateway")) | nindent 4 }}
+  {{- with .Values.gatewayApi.gateway.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  gatewayClassName: {{ .Values.gatewayApi.gateway.gatewayClassName }}
+  listeners:
+    {{- toYaml .Values.gatewayApi.gateway.listeners | nindent 4 }}
+{{- end }}

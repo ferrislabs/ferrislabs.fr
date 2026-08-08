@@ -1,0 +1,219 @@
+---
+import { Icon } from "@iconify/react";
+import { Button } from "@explainer/ui";
+import { BackgroundAnimation } from "./background-animation";
+
+const proofs = [
+  {
+    icon: "mdi:language-rust",
+    title: "Rust de bout en bout",
+    description: "Un backend Axum compilé, sans garbage collector : une latence faible et prévisible, même sous charge.",
+    grad: "linear-gradient(135deg, oklch(0.42 0.06 165), oklch(0.28 0.05 165))",
+    blurb: "Axum · Rust",
+  },
+  {
+    icon: "mdi:database-check-outline",
+    title: "Requêtes sûres",
+    description: "SQLx vérifie chaque requête PostgreSQL à la compilation, pour éviter les mauvaises surprises en production.",
+    grad: "linear-gradient(135deg, oklch(0.38 0.06 165), oklch(0.25 0.05 165))",
+    blurb: "PostgreSQL · SQLx",
+  },
+  {
+    icon: "mdi:server-network-outline",
+    title: "Auto-hébergeable",
+    description: "Un Docker Compose suffit pour démarrer. Hébergez Mestier où vous voulez et gardez le contrôle total de vos données.",
+    grad: "linear-gradient(135deg, oklch(0.34 0.05 165), oklch(0.22 0.04 165))",
+    blurb: "Docker · auto-hébergé",
+  },
+];
+
+const tags = ["Rust", "Axum", "PostgreSQL", "SQLx", "Docker", "Auto-hébergé", "Apache 2.0"];
+
+const modules = [
+  { name: "Facturation & CRM", status: "Disponible" },
+  { name: "Stock & rentabilité", status: "Disponible" },
+  { name: "Communication d'équipe", status: "Bientôt disponible" },
+  { name: "Projets", status: "Bientôt disponible" },
+  { name: "Support", status: "Bientôt disponible" },
+  { name: "RH", status: "Bientôt disponible" },
+];
+
+const corners = [
+  { icon: "lucide:bookmark", pos: "top-4 left-4" },
+  { icon: "lucide:file", pos: "top-4 right-4" },
+  { icon: "lucide:folder", pos: "bottom-4 left-4" },
+  { icon: "lucide:sparkle", pos: "bottom-4 right-4" },
+];
+---
+
+<section
+  id="mestier"
+  class="relative py-24 sm:py-32 overflow-hidden mestier-theme"
+>
+  <div
+    class="absolute inset-0 -z-10 pointer-events-none"
+    style="background: radial-gradient(ellipse at 80% 40%, color-mix(in oklch, var(--color-primary) 8%, transparent) 0%, transparent 60%);"
+    aria-hidden="true"
+  ></div>
+
+  <div class="max-w-6xl mx-auto px-6">
+    <!-- Eyebrow -->
+    <p class="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+      Produit phare
+    </p>
+
+    <!-- Intro -->
+    <div class="mt-6 max-w-3xl">
+      <div class="flex items-center gap-4">
+        <div class="flex items-center justify-center size-14 rounded-[6px] border border-primary/[28%] bg-primary/[12%]">
+          <img src="/mestier-logo.svg" alt="Mestier" class="size-10" />
+        </div>
+        <div>
+          <h2 class="text-2xl font-bold text-foreground sm:text-3xl">
+            Mestier
+          </h2>
+          <p class="text-sm font-medium mt-0.5 text-primary">
+            Suite logicielle open source pour l'entreprise, construite en Rust
+          </p>
+        </div>
+      </div>
+
+      <p class="mt-6 text-muted-foreground leading-relaxed">
+        Mestier est l'alternative open source de FerrisLabs à Google Workspace pour les entreprises : une suite logicielle extensible plutôt qu'un outil isolé de plus. Elle démarre avec la facturation, le CRM et la gestion des stocks. La communication d'équipe, les projets, le support et les RH sont déjà sur la feuille de route. Elle est auto-hébergeable et s'appuie sur Ferriskey pour l'authentification.
+      </p>
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        <Button size="default" className="cursor-pointer rounded-[3px]" client:load>
+          <a href="https://mestier.fr" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2">
+            <Icon icon="lucide:globe" className="size-4" client:load />
+            <span>Voir mestier.fr</span>
+          </a>
+        </Button>
+        <Button variant="outline" size="default" className="cursor-pointer rounded-[3px]" client:load>
+          <a href="https://github.com/ferrislabs/mestier" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2">
+            <Icon icon="mdi:github" className="size-4" client:load />
+            <span>Voir sur GitHub</span>
+          </a>
+        </Button>
+      </div>
+    </div>
+
+    <!-- Schematic panel: the 3 proofs as connected blocks -->
+    <div class="relative mt-12 overflow-hidden rounded-[4px] border border-border bg-background">
+      <div class="absolute inset-0 z-0 opacity-30">
+        <BackgroundAnimation client:only="react" />
+      </div>
+      <div
+        class="absolute inset-0 z-[1] pointer-events-none opacity-50"
+        style="background-image: linear-gradient(to right, var(--color-border) 1px, transparent 1px), linear-gradient(to bottom, var(--color-border) 1px, transparent 1px); background-size: 75px 75px; mask-image: radial-gradient(ellipse 92% 100% at 50% 50%, black 35%, transparent 92%); -webkit-mask-image: radial-gradient(ellipse 92% 100% at 50% 50%, black 35%, transparent 92%);"
+        aria-hidden="true"
+      ></div>
+
+      {corners.map((c) => (
+        <span class={`absolute z-[4] text-foreground/40 ${c.pos}`} aria-hidden="true">
+          <Icon icon={c.icon} className="size-4.5" client:load />
+        </span>
+      ))}
+
+      <div class="relative z-[3] flex flex-wrap items-center justify-center gap-y-5 px-8 py-16 min-h-[280px]">
+        {proofs.map((proof, i) => (
+          <>
+            {i > 0 && (
+              <div
+                class="relative hidden h-[132px] w-[74px] shrink-0 items-center justify-center sm:flex"
+                aria-hidden="true"
+              >
+                <span class="absolute inset-x-0 top-1/2 -translate-y-1/2 border-t-2 border-dashed border-foreground/45"></span>
+                <span class="relative size-2 rotate-45 bg-foreground/70 shadow-sm"></span>
+              </div>
+            )}
+            <div
+              class="relative flex h-[132px] w-[210px] max-w-full shrink-0 flex-col justify-between overflow-hidden rounded-[3px] p-4 text-white shadow-lg shadow-primary/20"
+              style={`background: ${proof.grad};`}
+            >
+              <span
+                class="pointer-events-none absolute inset-0"
+                style="background: linear-gradient(115deg, transparent 42%, rgba(255,255,255,0.2) 50%, transparent 58%);"
+              ></span>
+              <span class="relative z-[1] grid size-10 place-items-center rounded-[3px]" style="background: rgba(255,255,255,0.16);">
+                <Icon icon={proof.icon} className="size-5 text-white" client:load />
+              </span>
+              <div class="relative z-[1]">
+                <span class="block font-mono text-sm font-bold uppercase tracking-wider">
+                  {proof.title}
+                </span>
+                <span class="mt-1 block font-mono text-[10px] font-medium text-white/70">
+                  {proof.blurb}
+                </span>
+              </div>
+            </div>
+          </>
+        ))}
+      </div>
+    </div>
+
+    <!-- Proof descriptions -->
+    <dl class="mt-4 grid grid-cols-1 gap-px overflow-hidden rounded-[4px] border border-border bg-border sm:grid-cols-3">
+      {proofs.map((proof) => (
+        <div class="bg-background p-5">
+          <dt class="flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-primary">
+            <span class="size-1.5 bg-primary" aria-hidden="true"></span>
+            <span>{proof.title}</span>
+          </dt>
+          <dd class="mt-2.5 text-sm leading-relaxed text-muted-foreground">
+            {proof.description}
+          </dd>
+        </div>
+      ))}
+    </dl>
+
+    <!-- Tech tags -->
+    <div class="mt-4 flex flex-wrap gap-2.5">
+      {tags.map((tag) => (
+        <span class="rounded-[3px] border border-primary/35 bg-primary/[5%] px-2.5 py-2 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-primary">
+          {tag}
+        </span>
+      ))}
+    </div>
+
+    <!-- Module roadmap: extensible like Google Workspace -->
+    <div class="mt-8 rounded-[4px] border border-border bg-background p-5">
+      <p class="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-primary">
+        Conçu pour s'étendre, module par module
+      </p>
+      <div class="mt-4 flex flex-wrap gap-2.5">
+        {modules.map((mod) => (
+          <span
+            class:list={[
+              "flex items-center gap-2 rounded-[3px] border px-3 py-1.5 text-xs font-medium",
+              mod.status === "Disponible"
+                ? "border-primary/35 bg-primary/[8%] text-primary"
+                : "border-border text-muted-foreground",
+            ]}
+          >
+            <span
+              class:list={[
+                "size-1.5",
+                mod.status === "Disponible" ? "bg-primary" : "bg-muted-foreground/50",
+              ]}
+              aria-hidden="true"
+            ></span>
+            {mod.name}
+          </span>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .mestier-theme {
+    --color-primary: #0f3d36;
+    --primary: #0f3d36;
+  }
+
+  :global(html.dark) .mestier-theme {
+    --color-primary: oklch(0.75 0.14 165);
+    --primary: oklch(0.75 0.14 165);
+  }
+</style>
