@@ -1,11 +1,68 @@
 @import '@explainer/ui/styles/globals.css';
+@import '@fontsource-variable/space-grotesk';
+@import '@fontsource/silkscreen/400.css';
+@import '@fontsource/silkscreen/700.css';
 
 @source "../../../../packages/ui/src";
+
+/* Angles droits partout, comme sur le site Mestier. Une règle globale plutôt
+   que des `rounded-none` dispersés : elle attrape aussi les arrondis venant
+   des variantes cva du paquet UI, hors de portée d'une classe utilitaire. */
+*,
+*::before,
+*::after {
+  border-radius: 0 !important;
+}
+
+/* --------------------------------------------------------------------------
+   Système « pixel »
+
+   Tout dérive du logo : logo.svg est une grille de 22 rectangles en trois
+   teintes. On en tire la rampe de couleurs et la logique de grille, déjà
+   présentes ailleurs sur le site (fonds quadrillés, sparkline).
+
+   Space Grotesk pour les titres : ses terminaisons carrées prolongent la
+   grille. Silkscreen, bitmap, pour les libellés et les chiffres.
+
+   Portée limitée à l'app website : les tokens partagés vivent dans
+   packages/ui et alimentent aussi les docs et le blog.
+   -------------------------------------------------------------------------- */
+@theme {
+    --font-sans: 'Space Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
+    --font-pixel: 'Silkscreen', ui-monospace, monospace;
+
+    /* Rampe rust : les trois teintes du logo, étendues aux deux extrémités */
+    --color-rust-950: #120f0e;
+    --color-rust-900: #1c1917;
+    --color-rust-700: #7a2d06;
+    --color-rust-600: #a83e08;
+    --color-rust-500: #f2670f;
+    --color-rust-400: #ff8c42;
+    --color-rust-300: #ffb07c;
+
+    /* Cloud IAM pose un texte navy sur blanc plutôt qu'un noir neutre.
+       Transposé : notre dark est teinté rust. */
+    --color-foreground: #1c1917;
+    /* Surface pâle d'alternance, pendant de leur cyan très clair */
+    --color-surface-tint: #fbf5f1;
+}
 
 @keyframes fade-up-in {
     from {
         opacity: 0;
         transform: translateY(24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes reveal-up {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
     }
 
     to {
@@ -36,6 +93,14 @@
         animation: fade-in-soft 1s ease forwards;
     }
 
+    /* Variante courte pour le hero : même intention que .animate-fade-up-in
+       mais plus discrète, car les éléments s'enchaînent en cascade. */
+    .animate-reveal {
+        opacity: 0;
+        animation: reveal-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        will-change: transform, opacity;
+    }
+
     .animation-delay-100 {
         animation-delay: 0.1s;
     }
@@ -56,10 +121,28 @@
         animation-delay: 0.5s;
     }
 
+    /* Filet fait de carrés plutôt que d'un trait continu */
+    .pixel-rule {
+        height: 2px;
+        background-image: linear-gradient(to right, currentColor 2px, transparent 2px);
+        background-size: 4px 2px;
+        background-repeat: repeat-x;
+        opacity: 0.3;
+    }
+
+    /* Puce carrée, l'unité de base du système */
+    .pixel-dot {
+        width: 4px;
+        height: 4px;
+        background-color: currentColor;
+        flex-shrink: 0;
+    }
+
     @media (prefers-reduced-motion: reduce) {
 
         .animate-fade-up-in,
-        .animate-fade-in-soft {
+        .animate-fade-in-soft,
+        .animate-reveal {
             opacity: 1;
             animation: none;
             transform: none;
@@ -72,4 +155,67 @@
     body {
         overflow-x: clip;
     }
+}
+
+/* ---------------------------------------------------------------------------
+   Primitives reprises du site Mestier, transposées à la palette rust.
+   -------------------------------------------------------------------------- */
+
+/* Grille de pixels posée sur les aplats de marque */
+.bg-pixel-grid {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.12) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+/* Aplat de marque : le pendant rust du dégradé teal de Mestier */
+.surface-brand {
+  background:
+    radial-gradient(120% 120% at 0% 0%, var(--color-rust-400) 0%, transparent 55%),
+    linear-gradient(135deg, var(--color-rust-600) 0%, var(--color-rust-900) 100%);
+}
+
+/* Filet de séparation de section */
+.rule-x {
+  background-image: linear-gradient(to right, transparent, var(--color-border), transparent);
+}
+
+/* Animations d'entrée */
+@keyframes reveal-left {
+  from { opacity: 0; transform: translateX(-28px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes reveal-right {
+  from { opacity: 0; transform: translateX(28px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes reveal-fade {
+  from { opacity: 0; transform: scale(0.985); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.reveal,
+.reveal-left,
+.reveal-right,
+.reveal-fade {
+  opacity: 0;
+  animation-duration: 0.8s;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  animation-fill-mode: both;
+}
+.reveal { animation-name: reveal-up; }
+.reveal-left { animation-name: reveal-left; }
+.reveal-right { animation-name: reveal-right; }
+.reveal-fade { animation-name: reveal-fade; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal-left,
+  .reveal-right,
+  .reveal-fade {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }

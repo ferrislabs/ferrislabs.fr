@@ -1,5 +1,5 @@
 ---
-import { Icon } from '@iconify/react'
+import { Icon } from 'astro-icon/components'
 
 const team = [
   {
@@ -7,7 +7,7 @@ const team = [
     role: 'Ingénieur logiciel',
     image: '/teams/nathael.jpg',
     description:
-      'Pilote la vision, la direction produit et les fondations techniques de l\'écosystème Ferris.',
+      'Direction produit et architecture technique de l\'écosystème Ferris.',
     links: [
       {
         label: 'GitHub',
@@ -26,7 +26,7 @@ const team = [
     role: 'Ingénieur logiciel',
     image: '/teams/baptiste.jpeg',
     description:
-      'Contribue au produit, à l\'implémentation et à l\'évolution quotidienne des projets FerrisLabs.',
+      'Développement et évolution quotidienne des projets FerrisLabs.',
     links: [
       {
         label: 'GitHub',
@@ -45,7 +45,7 @@ const team = [
     role: 'CTO Cloud IAM',
     image: '/teams/luis.jpeg',
     description:
-      'Pilote la stratégie cloud et IAM de l\'écosystème Ferris, avec un focus sur l\'architecture d\'identité, la fiabilité de la plateforme et des fondations d\'accès qui tiennent à l\'échelle.',
+      'CTO de Cloud IAM. Conseille l\'écosystème Ferris sur l\'architecture d\'identité et son exploitation à grande échelle.',
     links: [
       {
         label: 'LinkedIn',
@@ -57,22 +57,23 @@ const team = [
 ]
 ---
 
-<section id="team" class="w-full max-w-6xl mx-auto px-5 py-16 sm:py-24 lg:py-32">
-  <div class="text-center mb-16 animate-fade-up-in">
-    <p class="text-sm font-semibold text-primary uppercase tracking-wide mb-3">
+<section id="team" class="w-full bg-surface-tint py-16 sm:py-24 lg:py-32">
+  <div class="mx-auto max-w-6xl px-5">
+  <div class="max-w-3xl mb-14 reveal">
+    <p class="font-pixel text-[12px] uppercase tracking-[0.08em] text-primary mb-4">
       Équipe
     </p>
     <h2 class="text-3xl font-semibold text-foreground sm:text-4xl">
-      Une équipe qui construit du logiciel open source fait pour durer
+      L'équipe
     </h2>
-    <p class="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto text-balance">
-      FerrisLabs est une organisation ouverte. On construit d'abord les fondations, puis on élargit l'écosystème autour de principes partagés : interopérabilité, auto-hébergement et maintenabilité à long terme.
+    <p class="mt-4 text-lg text-muted-foreground max-w-2xl">
+      FerrisLabs est une organisation ouverte : les dépôts sont publics et les contributions extérieures sont les bienvenues. On construit d'abord les briques d'identité, le reste de la suite s'appuie dessus.
     </p>
   </div>
 
   <div class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
     {team.map((member) => (
-      <article class="group relative overflow-hidden rounded-[4px] border bg-background animate-fade-up-in animation-delay-200">
+      <article class="group relative overflow-hidden rounded-none border bg-background reveal">
         <div class="relative aspect-[4/5] overflow-hidden">
           <img
             src={member.image}
@@ -85,7 +86,7 @@ const team = [
 
           <div class="absolute inset-x-0 bottom-0 p-6 sm:p-8 transition-transform duration-400 ease-out group-hover:translate-y-0">
             <div class="translate-y-8 transition-transform duration-400 ease-out group-hover:translate-y-0">
-              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-white/80">
+              <p class="font-pixel text-[11px] uppercase tracking-[0.06em] text-white/80">
                 {member.role}
               </p>
               <h3 class="mt-2 text-3xl font-semibold text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.6)]">
@@ -99,12 +100,12 @@ const team = [
                 {member.links.map((link) => (
                   <a
                     href={link.href}
-                    class="inline-flex items-center gap-2 rounded-[3px] border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/20"
+                    class="inline-flex items-center gap-2 rounded-none border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/20"
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={link.label}
                   >
-                    <Icon icon={link.icon} className="size-4" client:load />
+                    <Icon name={link.icon} class="size-4" />
                     <span>{link.label}</span>
                   </a>
                 ))}
@@ -114,5 +115,6 @@ const team = [
         </div>
       </article>
     ))}
+  </div>
   </div>
 </section>

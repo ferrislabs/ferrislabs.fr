@@ -1,54 +1,45 @@
 ---
-import { Icon } from "@iconify/react";
-
+/**
+ * Bande « ils nous font confiance ».
+ *
+ * Les logos ne sont pas mis à la même hauteur : quatre sont des marques
+ * carrées (ratio 1,0), Cloud-IAM est un logotype (ratio 4,4). À hauteur
+ * égale il occuperait 4,4× plus de surface et écraserait les autres.
+ * On l'abaisse donc pour équilibrer la surface optique, pas la hauteur.
+ */
+/** w/h issus du viewBox de chaque SVG : réserve la place avant chargement. */
 const logos = [
-  { light: "/logos/france-nuage.svg", alt: "France Nuage" },
-  { light: "/logos/cloud-iam-light.svg", dark: "/logos/cloud-iam-dark.svg", alt: "Cloud IAM" },
-  { light: "/logos/anthropic-light.svg", dark: "/logos/anthropic-dark.svg", alt: "Anthropic" },
-  { light: "/logos/natalia.svg", alt: "Natalia" },
-  { light: "/logos/gilded-health.svg", alt: "Gilded Health" },
-];
+  { src: '/logos/france-nuage.svg', alt: 'France Nuage', w: 56, px: 56 },
+  { src: '/logos/cloud-iam-light.svg', alt: 'Cloud IAM', w: 172, px: 39 },
+  { src: '/logos/anthropic-light.svg', alt: 'Anthropic', w: 49, px: 49 },
+  { src: '/logos/natalia.svg', alt: 'Natalia', w: 56, px: 56 },
+  { src: '/logos/gilded-health.svg', alt: 'Gilded Health', w: 63, px: 63 },
+]
 ---
 
-<section class="w-full max-w-6xl mx-auto px-5 py-10 sm:py-14">
-  <p class="text-center text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-8">
-    Ils nous font confiance
-  </p>
-  <div class="flex flex-wrap items-center justify-center gap-x-12 gap-y-8">
-    {logos.map((logo) =>
-      logo.light ? (
-        <div class="flex h-16 w-40 items-center justify-center">
-          <img
-            src={logo.light}
-            alt={logo.alt}
-            class:list={["h-12 w-auto max-w-36", logo.dark && "theme-logo-light"]}
-          />
-          {logo.dark && (
-            <img src={logo.dark} alt={logo.alt} class="theme-logo-dark h-12 w-auto max-w-36" />
-          )}
-        </div>
-      ) : (
-        <div
-          class="flex h-16 w-40 items-center justify-center rounded-[3px] border border-dashed border-muted-foreground/25 text-muted-foreground/40"
-          aria-hidden="true"
-        >
-          <Icon icon={logo.icon} className="size-8" client:load />
-        </div>
-      )
-    )}
+<section class="w-full border-y border-border bg-surface-tint">
+  <div class="mx-auto max-w-6xl px-6 py-12 sm:py-16">
+    <div class="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-14">
+      <p class="shrink-0 font-pixel text-[11px] uppercase leading-relaxed tracking-[0.08em] text-muted-foreground lg:max-w-[9rem]">
+        Ils nous font confiance
+      </p>
+
+      <div class="hidden h-14 w-px shrink-0 bg-border lg:block" aria-hidden="true"></div>
+
+      <ul class="flex flex-1 flex-wrap items-center gap-x-12 gap-y-8">
+        {logos.map((logo) => (
+          <li class="flex h-16 items-center">
+            <img
+              src={logo.src}
+              alt={logo.alt}
+              width={logo.w}
+              height={logo.px}
+              class="shrink-0 transition-transform duration-300 hover:scale-105"
+              decoding="async"
+            />
+          </li>
+        ))}
+      </ul>
+    </div>
   </div>
 </section>
-
-<style>
-  .theme-logo-dark {
-    display: none;
-  }
-
-  :global(html.dark) .theme-logo-light {
-    display: none;
-  }
-
-  :global(html.dark) .theme-logo-dark {
-    display: block;
-  }
-</style>

@@ -1,47 +1,48 @@
 ---
-import { Icon } from "@iconify/react";
-import { Button } from "@explainer/ui";
+import { Icon } from 'astro-icon/components';
+import { Button } from '@explainer/ui/components/button';
 
 const services = [
   {
     icon: "mdi:cube-outline",
     title: "Ingénierie produit",
-    description: "Vous avez un process métier coûteux, manuel, ou porté par un outil qui ne suit plus. On conçoit et on construit le logiciel sur-mesure qui le remplace. Il est pensé pour durer, pas pour être une rustine.",
+    description: "Un process manuel qui coûte cher, ou un outil interne que plus personne n'ose toucher. On conçoit et on développe le logiciel qui le remplace, puis on reste pour le faire évoluer.",
     examples: [
       "Applications métier sur-mesure",
-      "Automatisation de tâches manuelles",
-      "Refonte d'outils internes vieillissants",
+      "Automatisation de saisies et de reportings manuels",
+      "Reprise d'un outil interne devenu illisible",
+      "Intégrations entre logiciels qui ne se parlent pas",
     ],
   },
   {
     icon: "mdi:robot-outline",
     title: "IA appliquée à la production",
-    description: "On construit des pipelines d'agents IA qui exécutent un vrai travail dans votre système d'information, pas une démo. La sécurité et la gestion des accès sont pensées dès la conception, pas ajoutées après coup.",
+    description: "On branche des agents IA sur votre système d'information pour qu'ils exécutent des tâches réelles. Chaque agent a son propre compte, ses propres droits, et on garde une trace de ce qu'il fait.",
   },
   {
     icon: "mdi:shield-key-outline",
     title: "IAM et sécurité",
-    description: "Architectures d'identité et de gestion des accès robustes (Keycloak, OIDC/OAuth2), y compris pour les systèmes agentiques. Quand la réglementation, NIS2 ou une autre, s'applique à votre contexte, on l'intègre. Elle n'est jamais notre point de départ.",
+    description: "Architecture d'identité et de gestion des accès : Keycloak, OIDC, OAuth2. On reprend aussi des installations existantes quand la gestion des droits a dérivé avec le temps. Si NIS2 s'applique chez vous, on en tient compte.",
   },
   {
     icon: "mdi:swap-horizontal",
     title: "Transformation numérique",
-    description: "Migration d'outils, refonte de process, modernisation de systèmes existants. On ne réécrit pas ce qui fonctionne juste pour le principe.",
+    description: "Migration d'outils et modernisation de systèmes existants. On commence par regarder ce qui tourne déjà, souvent une partie mérite d'être gardée telle quelle.",
   },
 ];
 ---
 
-<section id="services" class="relative w-full py-16 sm:py-24 lg:py-32">
+<section id="services" class="relative w-full bg-surface-tint py-16 sm:py-24 lg:py-32">
   <div class="relative w-full max-w-6xl mx-auto px-5">
-    <div class="text-center mb-16 animate-fade-up-in">
-      <p class="text-sm font-semibold text-primary uppercase tracking-wide mb-3">
+    <div class="max-w-3xl mb-14 reveal">
+      <p class="font-pixel text-[12px] uppercase tracking-[0.08em] text-primary mb-4">
         Ce qu'on fait
       </p>
       <h2 class="text-3xl font-semibold text-foreground sm:text-4xl">
-        Ce qu'on construit, dans l'ordre où ça compte
+        Quatre types de missions
       </h2>
-      <p class="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto text-balance">
-        FerrisLabs conçoit du logiciel sur-mesure, des systèmes d'IA en production et des architectures d'identité robustes, avec la rigueur d'ingénierie qui a produit Ferriskey. La conformité réglementaire, quand elle est pertinente, vient en complément de ce travail, jamais en remplacement.
+      <p class="mt-4 text-lg text-muted-foreground max-w-2xl">
+        On travaille seuls sur un projet complet, ou en renfort d'une équipe déjà en place. La plupart des projets mélangent deux ou trois des sujets ci-dessous.
       </p>
     </div>
 
@@ -49,7 +50,7 @@ const services = [
       {services.map((service, index) => (
         <div
           class:list={[
-            "border rounded-[4px] bg-primary/5 transition-transform duration-300 hover:-translate-y-1",
+            "border rounded-none bg-primary/5 transition-transform duration-300 hover:-translate-y-1",
             index === 0 ? "lg:col-span-2 lg:row-span-2 relative overflow-hidden" : "",
             index === 1 ? "lg:col-span-2" : "",
           ]}
@@ -66,11 +67,11 @@ const services = [
           <div class:list={["relative flex flex-col h-full", index === 0 ? "p-8 gap-6" : "p-6 gap-4"]}>
             <div
               class:list={[
-                "flex items-center justify-center shrink-0 rounded-[2px] bg-primary/10",
+                "flex items-center justify-center shrink-0 rounded-none bg-rust-600",
                 index === 0 ? "size-14" : "size-11",
               ]}
             >
-              <Icon icon={service.icon} className={index === 0 ? "size-7 text-primary" : "size-5 text-primary"} client:load />
+              <Icon name={service.icon} class={index === 0 ? "size-8 text-white" : "size-6 text-white"} />
             </div>
             <div>
               <h3 class:list={["font-semibold text-foreground", index === 0 ? "text-2xl" : "text-base"]}>
@@ -84,7 +85,7 @@ const services = [
               <ul class="flex flex-col gap-2.5">
                 {service.examples.map((example) => (
                   <li class="flex items-center gap-2 text-sm text-foreground">
-                    <Icon icon="mdi:check-circle-outline" className="size-4 text-primary shrink-0" client:load />
+                    <span class="pixel-dot text-primary" aria-hidden="true"></span>
                     <span>{example}</span>
                   </li>
                 ))}
@@ -95,8 +96,8 @@ const services = [
                 href="#ferriskey"
                 class="mt-auto inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
               >
-                <span>Voir comment on construit</span>
-                <Icon icon="mdi:arrow-right" className="size-3.5" client:load />
+                <span>Voir Ferriskey</span>
+                <Icon name="mdi:arrow-right" class="size-3.5" />
               </a>
             )}
           </div>
@@ -105,10 +106,10 @@ const services = [
     </div>
 
     <div class="mt-10 flex justify-center">
-      <Button size="lg" className="cursor-pointer rounded-[3px]" client:load>
+      <Button size="lg" className="cursor-pointer rounded-none">
         <a href="mailto:contact@ferrislabs.fr" class="flex gap-2">
-          <span>Décrire mon besoin</span>
-          <Icon icon="mdi:arrow-right" aria-hidden="true" className="size-5" client:load />
+          <span>Nous écrire</span>
+          <Icon name="mdi:arrow-right" aria-hidden="true" class="size-5" />
         </a>
       </Button>
     </div>
