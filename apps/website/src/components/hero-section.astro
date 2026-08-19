@@ -1,118 +1,313 @@
 ---
-import { BackgroundAnimation } from "./background-animation";
-import { Icon } from "@iconify/react";
-import { Button } from "@explainer/ui";
+import { Icon } from 'astro-icon/components'
+import RepoActivityPanel from './repo-activity-panel.astro'
+import { fetchRepoActivity } from '../lib/repo-activity'
+
+const activity = await fetchRepoActivity({
+  owner: 'ferriskey',
+  repo: 'ferriskey',
+  token: import.meta.env.GITHUB_TOKEN ?? process.env.GITHUB_TOKEN,
+})
+
+const endIcons = ['mdi:language-rust', 'mdi:shield-key-outline', 'mdi:cube-outline']
 ---
 
-<div
-  class="relative px-4 sm:px-6 lg:px-8 flex flex-col py-24 sm:py-32 lg:py-40 pb-0! overflow-hidden"
->
-  <div>
-    <div class="absolute inset-0 w-full -z-10">
-      <BackgroundAnimation client:only="react" />
-    </div>
-
-    <!-- Decorative grid -->
+<!-- Haut sur desktop : le panneau interne se fige et la passation au scroll peut se jouer -->
+<section id="hero-scroll" class="relative border-b border-border lg:h-[190vh]">
+  <div
+    id="hero-sticky"
+    class="relative overflow-hidden lg:sticky lg:top-14 lg:h-[calc(100vh-3.5rem)]"
+  >
+    <!-- Aplat gris de droite : s'élargit pour prendre le hero au scroll -->
     <div
-      class="absolute inset-0 -z-5 pointer-events-none"
-      style="clip-path: inset(0 -100vw 0 -100vw);"
+      id="hero-grey"
+      class="pointer-events-none absolute inset-y-0 right-0 z-0 hidden w-full bg-foreground/[0.035] lg:block"
+      style="transform: scaleX(0.37); transform-origin: right center; will-change: transform"
       aria-hidden="true"
     >
-      <div
-        class="absolute inset-0 opacity-[0.07]"
-        style="background-image: linear-gradient(to right, var(--color-primary) 1px, transparent 1px), linear-gradient(to bottom, var(--color-primary) 1px, transparent 1px); background-size: 75px 75px; mask-image: radial-gradient(ellipse 75% 65% at 50% 25%, black 0%, transparent 75%); -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 25%, black 0%, transparent 75%);"
-      >
-      </div>
-
-      <!-- Corner accents -->
-      <div class="absolute top-12 left-8 size-3 border border-primary/25 sm:top-16 sm:left-16"></div>
-      <div class="hidden sm:block absolute top-20 right-16 size-4 border border-primary/20"></div>
-      <div class="hidden sm:block absolute top-1/2 -left-2 size-2.5 border border-primary/20 -translate-y-1/2"></div>
-      <div class="hidden sm:block absolute bottom-24 right-1/4 size-3 bg-primary/10"></div>
-      <div class="hidden sm:block absolute bottom-16 left-1/3 size-2 bg-primary/10"></div>
     </div>
 
-    <!-- Bottom separator -->
-    <div
-      class="absolute bottom-0 inset-x-0 h-px bg-linear-to-r from-transparent via-border to-transparent"
-    >
-    </div>
-
-    <div class="w-full max-w-6xl mx-auto pb-24 lg:pb-32">
-      <div class="text-center">
-        <div class="mb-6 justify-center animate-fade-up-in">
-          <a
-            href="https://github.com/ferrislabs"
-            rel="noopener noreferrer"
-            target="_blank"
-            class="rounded-[3px] font-semibold inline-flex items-center gap-2 transition-colors px-4 py-1.5 text-xs ring ring-inset ring-primary/50 text-primary hover:bg-primary/10 active:bg-primary/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-          >
-            <span>FerrisLabs</span>
-            <Icon icon="mdi:arrow-right" className="size-3.5" client:load />
-          </a>
+    <div class="relative z-[1] grid h-full grid-cols-1 lg:grid-cols-[1.7fr_1fr]">
+      <!-- GAUCHE : titre puis panneau d'activité -->
+      <div class="flex flex-col">
+        <div
+          id="hero-title"
+          class="relative z-[1] flex flex-1 items-end px-5 pt-12 pb-6 sm:px-8 lg:pt-16"
+        >
+          <h1 class="text-5xl font-semibold leading-[1.02] tracking-[-0.03em] text-foreground sm:text-6xl lg:text-7xl">
+            <span class="inline-block reveal-left" style="animation-delay: 0.05s">Du logiciel métier</span><br />
+            <span class="inline-block reveal-left" style="animation-delay: 0.18s">en Rust.</span>
+          </h1>
         </div>
-        <h1 class="text-5xl text-pretty tracking-tight text-foreground font-semibold sm:text-7xl max-w-6xl mx-auto animate-fade-up-in animation-delay-100">
-          Chez vous, quelque chose est devenu <span class="text-primary">trop lourd</span>. On construit le logiciel qui le <span class="text-primary">simplifie</span>.
-        </h1>
-        <p class="text-lg sm:text-xl/8 text-muted-foreground text-balance mt-6 max-w-3xl mx-auto animate-fade-up-in animation-delay-200">
-          FerrisLabs conçoit des produits sur-mesure, des pipelines d'agents IA en production et des architectures d'identité robustes, avec la même rigueur d'ingénierie qui a donné naissance à Ferriskey, notre plateforme IAM open source. Pas de conseil générique : du code qui tient en production.
-        </p>
+
+        <div id="hero-board" class="border-r border-border px-5 pb-6 sm:px-8">
+          <div class="reveal-fade max-w-lg" style="animation-delay: 0.3s">
+            <RepoActivityPanel activity={activity} compact />
+          </div>
+        </div>
       </div>
 
-      <div class="pt-10 flex items-center justify-center animate-fade-up-in animation-delay-300">
-        <div class="flex flex-wrap justify-center gap-x-4 gap-y-3">
-          <Button size="lg" className="cursor-pointer rounded-[3px]" client:load>
+      <!-- DROITE : accroche abaissée -->
+      <div
+        id="hero-right"
+        class="relative z-[2] flex flex-col justify-between gap-10 px-5 py-10 sm:px-8 lg:pt-[16vh]"
+      >
+        <div>
+          <!-- Ce texte descend au centre et grossit pour devenir le titre final -->
+          <div id="hero-lead-wrap" style="transform-origin: left center">
+            <p class="reveal-right max-w-md text-lg/8 text-foreground sm:text-xl/8" style="animation-delay: 0.35s">
+              On conçoit des applications sur-mesure et les architectures
+              d'identité qui vont avec.
+            </p>
+          </div>
+
+          <!-- CTA mobile : sur desktop, ce sont les boutons de la passation -->
+          <div class="mt-7 flex flex-wrap gap-3 lg:hidden">
             <a
               href="mailto:contact@ferrislabs.fr"
-              class="flex gap-2"
+              class="inline-flex items-center gap-2 bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
             >
-              <span>Discutons de votre projet</span>
-              <Icon
-                icon="mdi:arrow-right"
-                aria-hidden="true"
-                className="size-5"
-                client:load
-              />
+              <span>Nous écrire</span>
+              <Icon name="mdi:chevron-right" class="size-4.5" />
             </a>
-          </Button>
-          <Button
-            variant="outline"
-            size="lg"
-            className="cursor-pointer rounded-[3px]"
-            client:load
-          >
             <a
-              href="#ferriskey"
-              class="flex gap-2"
+              href="https://github.com/ferrislabs"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 border border-border px-5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-foreground/[0.04]"
             >
-              <span>Voir comment on construit</span>
-              <Icon
-                icon="mdi:arrow-right"
-                aria-hidden="true"
-                className="size-5"
-                client:load
-              />
+              <Icon name="mdi:github" class="size-4.5" />
+              <span>Voir sur GitHub</span>
             </a>
-          </Button>
+          </div>
         </div>
-      </div>
 
-      <div
-        class="mt-10 flex items-center justify-center gap-x-8 gap-y-3 flex-wrap animate-fade-up-in animation-delay-400"
-      >
-        <div class="flex items-center gap-2 text-sm text-muted-foreground">
-          <Icon icon="mdi:open-source-initiative" className="size-4 text-primary/70" client:load />
-          <span>Open source par conception</span>
-        </div>
-        <div class="flex items-center gap-2 text-sm text-muted-foreground">
-          <Icon icon="mdi:connection" className="size-4 text-primary/70" client:load />
-          <span>Propulsé par Ferriskey</span>
-        </div>
-        <div class="flex items-center gap-2 text-sm text-muted-foreground">
-          <Icon icon="mdi:language-rust" className="size-4 text-primary/70" client:load />
-          <span>Construit autour de Rust</span>
+        <!-- Encart « à la une » : la dernière version de Ferriskey -->
+        <div data-hero-out style="will-change: transform">
+          <div class="reveal-right" style="animation-delay: 0.7s">
+            <p class="mb-3 font-pixel text-[11px] uppercase tracking-[0.08em] text-muted-foreground">
+              À la une
+            </p>
+            <a
+              href="https://github.com/ferriskey/ferriskey/releases"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="group flex items-center gap-3 border border-border bg-card p-3 transition-colors hover:bg-foreground/[0.03]"
+            >
+              <span class="flex size-11 shrink-0 items-center justify-center surface-brand text-white">
+                <Icon name="mdi:rocket-launch-outline" class="size-5" />
+              </span>
+              <span class="min-w-0 flex-1">
+                <span class="block font-pixel text-[10px] uppercase text-primary">
+                  Nouveauté
+                </span>
+                <span class="block truncate text-sm font-medium text-foreground">
+                  Ferriskey {activity.release?.tag ?? 'est en ligne'}
+                </span>
+              </span>
+              <Icon name="mdi:chevron-right" class="size-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+            </a>
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- Icônes qui apparaissent une à une au-dessus du titre final (desktop) -->
+    <div id="hero-endicons" class="pointer-events-none absolute z-10 hidden gap-3 lg:flex">
+      {endIcons.map((name) => (
+        <span
+          class="hero-endicon flex size-12 items-center justify-center border border-border bg-card text-primary"
+          style="opacity: 0"
+        >
+          <Icon name={name} class="size-6" />
+        </span>
+      ))}
+    </div>
+
+    <!-- Bloc qui glisse depuis la droite en fin de passation (desktop) -->
+    <div
+      id="hero-endcell"
+      class="pointer-events-none absolute bottom-[12%] right-[3%] top-[12%] z-10 hidden w-[30%] lg:block"
+      style="transform: translateX(125%)"
+    >
+      <div class="relative h-full w-full overflow-hidden surface-brand">
+        <div class="absolute inset-0 bg-pixel-grid opacity-60" aria-hidden="true"></div>
+        <div class="relative flex h-full flex-col justify-between p-6 text-white">
+          <Icon name="mdi:language-rust" class="size-7" />
+          <div>
+            <p class="font-pixel text-[11px] uppercase tracking-[0.08em] text-white/70">
+              Open source · Rust
+            </p>
+            <p class="mt-2 text-xl font-semibold leading-snug">
+              Le code de ce qu'on sait faire est public.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Boutons qui arrivent par la gauche sous le titre final (desktop) -->
+    <div
+      id="hero-endbuttons"
+      class="pointer-events-none absolute z-10 hidden flex-wrap gap-3 lg:flex"
+      style="transform: translateX(-120%)"
+    >
+      <a
+        href="mailto:contact@ferrislabs.fr"
+        class="pointer-events-auto inline-flex items-center gap-2 bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+      >
+        <span>Nous écrire</span>
+        <Icon name="mdi:chevron-right" class="size-4.5" />
+      </a>
+      <a
+        href="#ferriskey"
+        class="pointer-events-auto inline-flex items-center gap-2 border border-border bg-background px-5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-foreground/[0.04]"
+      >
+        <span>Voir Ferriskey</span>
+        <Icon name="mdi:arrow-right" class="size-4.5" />
+      </a>
+    </div>
   </div>
-</div>
+</section>
+
+<style>
+  @media (prefers-reduced-motion: reduce) and (min-width: 1024px) {
+    #hero-scroll { height: auto; }
+    #hero-sticky { position: static; height: auto; }
+    #hero-endicons,
+    #hero-endcell,
+    #hero-endbuttons { display: none; }
+  }
+</style>
+
+<script>
+  // Passation au scroll : le titre sort par le haut, le panneau part en
+  // diagonale, l'aplat gris s'élargit, et l'accroche de droite descend au
+  // centre en grossissant pour devenir le titre final.
+  // Une fois l'état final atteint, il est simplement tenu : c'est le
+  // décollement naturel du panneau figé qui enchaîne sur la section suivante.
+  // Desktop uniquement, neutralisé si l'utilisateur limite les animations.
+  function initHeroScroll() {
+    const section = document.getElementById('hero-scroll')
+    const sticky = document.getElementById('hero-sticky')
+    const title = document.getElementById('hero-title')
+    const board = document.getElementById('hero-board')
+    const grey = document.getElementById('hero-grey')
+    const right = document.getElementById('hero-right')
+    const wrap = document.getElementById('hero-lead-wrap')
+    const endicons = document.getElementById('hero-endicons')
+    const endcell = document.getElementById('hero-endcell')
+    const endbtns = document.getElementById('hero-endbuttons')
+    if (!section || !sticky || !title || !board || !grey || !right || !wrap) return
+
+    const outs = Array.from(section.querySelectorAll<HTMLElement>('[data-hero-out]'))
+    const icons = endicons ? (Array.from(endicons.children) as HTMLElement[]) : []
+    const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v))
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const GROW = 0.9
+
+    let dx = 0, dy = 0, grey0 = 0.37, boardShift = 800, titleShift = 600
+    let ticking = false
+
+    function offsetWithinSticky(el: HTMLElement) {
+      let x = 0, y = 0
+      let n: HTMLElement | null = el
+      while (n && n !== sticky) {
+        x += n.offsetLeft; y += n.offsetTop
+        n = n.offsetParent as HTMLElement | null
+      }
+      return { x, y }
+    }
+
+    function measure() {
+      const W = sticky!.clientWidth
+      const H = sticky!.clientHeight
+      const targetLeft = Math.round(W * 0.03) + 12
+      const o = offsetWithinSticky(wrap!)
+      dx = targetLeft - o.x
+      dy = H * 0.5 - (o.y + wrap!.offsetHeight / 2)
+      grey0 = right!.offsetWidth / W
+      boardShift = H + board!.offsetHeight
+      titleShift = title!.offsetTop + title!.offsetHeight + 24
+
+      const titleHalf = (wrap!.offsetHeight * (1 + GROW)) / 2
+      if (endicons) {
+        endicons.style.left = `${targetLeft}px`
+        endicons.style.top = `${Math.max(24, H * 0.5 - titleHalf - 64)}px`
+      }
+      if (endbtns) {
+        endbtns.style.left = `${targetLeft}px`
+        endbtns.style.top = `${H * 0.5 + titleHalf + 28}px`
+      }
+    }
+
+    function reset() {
+      sticky!.style.opacity = ''
+      title!.style.transform = ''
+      board!.style.transform = ''
+      grey!.style.transform = `scaleX(${grey0})`
+      wrap!.style.transform = ''
+      for (const el of outs) el.style.transform = ''
+      for (const ic of icons) ic.style.opacity = '0'
+      if (endcell) endcell.style.transform = 'translateX(125%)'
+      if (endbtns) endbtns.style.transform = 'translateX(-120%)'
+    }
+
+    function update() {
+      ticking = false
+      const desktop = window.matchMedia('(min-width: 1024px)').matches
+      if (!desktop || reduce.matches) { reset(); return }
+
+      const range = window.innerHeight * 0.6
+      const p = clamp(-section!.getBoundingClientRect().top / range, 0, 1)
+
+      const tp = clamp(p / 0.35, 0, 1)
+      title!.style.transform = tp === 0 ? '' : `translate(0, ${-tp * titleShift}px)`
+
+      board!.style.transform = p === 0 ? '' : `translate(${-p * 105}%, ${-p * boardShift}px)`
+
+      const greyScale = clamp(1 - (1 - grey0) * (1 - 1.05 * p), grey0, 1)
+      grey!.style.transform = `scaleX(${greyScale})`
+
+      wrap!.style.transform = `translate(${dx * p}px, ${dy * p}px) scale(${1 + p * GROW})`
+
+      for (const el of outs) el.style.transform = `translate3d(${p * 130}%, 0, 0)`
+
+      if (endcell) {
+        const ep = clamp((p - 0.45) / 0.55, 0, 1)
+        endcell.style.transform = `translateX(${(1 - ep) * 125}%)`
+      }
+      if (endbtns) {
+        const bp = clamp((p - 0.82) / 0.18, 0, 1)
+        endbtns.style.transform = `translateX(${(1 - bp) * -120}%)`
+      }
+      // Sortie en fondu sur les derniers 22 % de la section : le panneau se
+      // dissout au lieu d'être poussé net par la section suivante.
+      for (let i = 0; i < icons.length; i++) {
+        const t0 = 0.72 + i * 0.07
+        const ip = clamp((p - t0) / 0.09, 0, 1)
+        icons[i].style.opacity = `${ip}`
+        icons[i].style.transform = `translateY(${(1 - ip) * 14}px)`
+      }
+    }
+
+    function onScroll() {
+      if (!ticking) { ticking = true; requestAnimationFrame(update) }
+    }
+
+    measure()
+    update()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', () => { measure(); update() })
+    // Les polices décalent la mise en page : on remesure dès qu'elles sont
+    // prêtes, sinon dx/dy restent faux jusqu'au filet de sécurité.
+    if (document.fonts?.ready) {
+      document.fonts.ready.then(() => { measure(); update() })
+    }
+    window.setTimeout(() => { measure(); update() }, 1700)
+    reduce.addEventListener?.('change', update)
+  }
+
+  initHeroScroll()
+  document.addEventListener('astro:after-swap', initHeroScroll)
+</script>
