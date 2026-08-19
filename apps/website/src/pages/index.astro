@@ -15,12 +15,25 @@ import { siteConfig } from '../config'
 
 <Base
   title="FerrisLabs"
-  description="FerrisLabs builds Ferriskey, an open source IAM platform, and Mestier, an open source alternative to Google Workspace for companies. We also offer consulting, interventions, and training on Rust, IAM, and Kubernetes."
+  description="FerrisLabs développe des logiciels métier en Rust et des architectures d'identité. Nous maintenons Ferriskey, une plateforme IAM open source, et Mestier, une alternative open source à Google Workspace pour les entreprises."
   thumbnail="/thumbnail.png"
 >
-  <WebsiteNavbar client:load transition:persist />
+  <WebsiteNavbar transition:persist />
 
   <HeroSection />
+
+  <!-- Les filets verticaux ne courent qu'à partir d'ici : le hero a sa propre
+       grille asymétrique et n'est pas contraint au conteneur de contenu.
+       Positionnés en absolu dans ce bloc plutôt que fixés au viewport, pour
+       qu'ils démarrent exactement au haut de la bande « ils nous font confiance ». -->
+  <div class="relative">
+    <div
+      class="pointer-events-none absolute inset-0 z-30 hidden lg:block"
+      aria-hidden="true"
+    >
+      <div class="mx-auto h-full max-w-6xl border-x border-foreground/10"></div>
+    </div>
+
   <TrustedBySection />
   <FerriskeySpotlightSection />
   <MestierSpotlightSection />
@@ -32,7 +45,7 @@ import { siteConfig } from '../config'
 
   <footer class="mx-auto max-w-6xl px-6 pb-10 pt-4">
     <div class="border-t pt-8 text-sm text-muted-foreground flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-      <p>{siteConfig.name} is building open source infrastructure for modern organizations.</p>
+      <p>{siteConfig.name}. Nos projets sont open source, le code est sur GitHub.</p>
       <div class="flex items-center gap-4">
         <a href="#ferriskey" class="hover:text-foreground transition-colors">Ferriskey</a>
         <a href="#mestier" class="hover:text-foreground transition-colors">Mestier</a>
@@ -42,4 +55,5 @@ import { siteConfig } from '../config'
       </div>
     </div>
   </footer>
+  </div>
 </Base>

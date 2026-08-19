@@ -1,18 +1,21 @@
-import { Button } from '@explainer/ui'
+import { Button } from '@explainer/ui/components/button'
 
 export function WebsiteNavbar() {
   const links = [
     { label: 'Ferriskey', href: '#ferriskey' },
     { label: 'Mestier', href: '#mestier' },
     { label: 'Ce qu\'on fait', href: '#services' },
-    { label: 'Team', href: '#team' },
+    { label: 'Équipe', href: '#team' },
   ]
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <a href="/" className="flex items-center gap-2 text-lg font-semibold text-foreground">
-          <img src="/logo.svg" alt="FerrisLabs" className="h-6 w-6" />
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background">
+      <div className="mx-auto flex h-14 max-w-6xl items-center gap-8 px-4 sm:px-6">
+        <a
+          href="/"
+          className="flex shrink-0 items-center gap-2 text-[15px] font-semibold tracking-tight text-foreground"
+        >
+          <img src="/logo.svg" alt="" className="h-5 w-5" />
           FerrisLabs
         </a>
 
@@ -21,24 +24,24 @@ export function WebsiteNavbar() {
             <a
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              className="text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground"
             >
               {link.label}
             </a>
           ))}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="ml-auto flex shrink-0 items-center gap-5">
           <a
             href="https://github.com/ferrislabs"
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden text-sm font-medium text-muted-foreground transition-colors hover:text-foreground sm:inline"
+            className="hidden text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground sm:inline"
           >
             GitHub
           </a>
-          <Button size="sm" className="cursor-pointer rounded-[3px]">
-            <a href="#ferriskey">Explore</a>
+          <Button size="sm" className="cursor-pointer rounded-none h-8 px-3 text-[13px]">
+            <a href="mailto:contact@ferrislabs.fr">Nous écrire</a>
           </Button>
         </div>
       </div>
