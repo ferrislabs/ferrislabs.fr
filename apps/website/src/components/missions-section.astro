@@ -1,0 +1,93 @@
+---
+import { Icon } from 'astro-icon/components'
+
+/**
+ * Les missions : ce qu'on fait pour d'autres, avec les mêmes outils et la même
+ * exigence que nos produits. Une cellule par type de mission.
+ */
+const services = [
+  {
+    icon: "mdi:cube-outline",
+    title: "Ingénierie produit",
+    description: "Un process manuel qui coûte cher, ou un outil interne que plus personne n'ose toucher. On conçoit et on développe le logiciel qui le remplace, puis on reste pour le faire évoluer.",
+    examples: [
+      "Applications métier sur-mesure",
+      "Automatisation de saisies et de reportings manuels",
+      "Reprise d'un outil interne devenu illisible",
+      "Intégrations entre logiciels qui ne se parlent pas",
+    ],
+  },
+  {
+    icon: "mdi:robot-outline",
+    title: "IA appliquée à la production",
+    description: "On branche des agents IA sur votre système d'information pour qu'ils exécutent des tâches réelles. Chaque agent a son propre compte, ses propres droits, et on garde une trace de ce qu'il fait.",
+  },
+  {
+    icon: "mdi:shield-key-outline",
+    title: "IAM et sécurité",
+    description: "Architecture d'identité et de gestion des accès : Keycloak, OIDC, OAuth2. On reprend aussi des installations existantes quand la gestion des droits a dérivé avec le temps. Si NIS2 s'applique chez vous, on en tient compte.",
+  },
+  {
+    icon: "mdi:swap-horizontal",
+    title: "Transformation numérique",
+    description: "Migration d'outils et modernisation de systèmes existants. On commence par regarder ce qui tourne déjà, souvent une partie mérite d'être gardée telle quelle.",
+  },
+];
+---
+
+<section id="missions" aria-labelledby="missions-title" class="scroll-mt-12 border-b border-border">
+  <div class="mx-auto max-w-6xl border-x border-border">
+    <div class="grid gap-6 px-5 py-20 sm:px-8 sm:py-24 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-end">
+      <div>
+        <p class="font-pixel text-[11px] uppercase tracking-[0.08em] text-primary">Missions</p>
+        <h2
+          id="missions-title"
+          class="mt-4 text-balance text-[clamp(2rem,4.5vw,3.5rem)] font-medium leading-[1.05] tracking-[-0.035em]"
+        >
+          Vos projets, construits comme nos produits.
+        </h2>
+      </div>
+      <p class="max-w-md text-[15px] leading-7 text-muted-foreground lg:justify-self-end">
+        On travaille seuls sur un projet complet, ou en renfort d'une équipe en place. Même Rust, même
+        architecture, mêmes revues de code que sur Ferriskey.
+      </p>
+    </div>
+
+    <ul class="grid border-t border-border sm:grid-cols-2">
+      {services.map((service) => (
+        <li class="group border-b border-border p-6 transition-colors hover:bg-foreground/[0.025] sm:p-8 sm:odd:border-r">
+          <span class="flex size-11 items-center justify-center border border-border bg-card text-primary transition-colors group-hover:border-primary/40">
+            <Icon name={service.icon} class="size-5" />
+          </span>
+          <h3 class="mt-6 text-xl font-semibold tracking-tight">{service.title}</h3>
+          <p class="mt-3 max-w-md text-sm leading-6 text-muted-foreground">{service.description}</p>
+          {service.examples && (
+            <ul class="mt-5 space-y-2">
+              {service.examples.map((example) => (
+                <li class="flex items-center gap-3 text-sm">
+                  <span class="pixel-dot text-primary" aria-hidden="true"></span>
+                  {example}
+                </li>
+              ))}
+            </ul>
+          )}
+        </li>
+      ))}
+    </ul>
+
+    <div class="flex flex-col gap-4 px-5 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+      <p class="text-sm text-muted-foreground">
+        <span class="font-pixel text-[11px] uppercase text-foreground">NIS2</span>
+        <span class="mx-2" aria-hidden="true">·</span>
+        Concerné ? On peut prendre la partie identité et accès : cartographie, gouvernance des droits, plan de remédiation.
+      </p>
+      <a
+        href="mailto:contact@ferrislabs.fr"
+        class="inline-flex shrink-0 items-center gap-2 bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+      >
+        Nous écrire
+        <Icon name="mdi:chevron-right" class="size-4" />
+      </a>
+    </div>
+  </div>
+</section>

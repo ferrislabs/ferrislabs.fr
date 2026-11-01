@@ -1,0 +1,84 @@
+---
+import { Icon } from 'astro-icon/components'
+import { FooterWordmark } from './footer-wordmark'
+
+const columns = [
+  {
+    title: 'Produits',
+    links: [
+      { label: 'Ferriskey', href: 'https://ferriskey.rs' },
+      { label: 'Mestier', href: 'https://mestier.fr' },
+      { label: 'FerrisTrace', href: 'https://ferristrace.dev' },
+    ],
+  },
+  {
+    title: 'Le code',
+    links: [
+      { label: 'GitHub FerrisLabs', href: 'https://github.com/ferrislabs' },
+      { label: 'GitHub Ferriskey', href: 'https://github.com/ferriskey/ferriskey' },
+    ],
+  },
+  {
+    title: 'FerrisLabs',
+    links: [
+      { label: 'Manifeste', href: '#manifeste' },
+      { label: 'Missions', href: '#missions' },
+      { label: 'Équipe', href: '#equipe' },
+      { label: 'contact@ferrislabs.fr', href: 'mailto:contact@ferrislabs.fr' },
+    ],
+  },
+]
+---
+
+<footer class="overflow-hidden">
+  <div class="mx-auto max-w-6xl border-x border-border">
+    <div class="flex flex-col items-start gap-6 border-b border-border px-5 py-20 sm:px-8 md:flex-row md:items-end md:justify-between">
+      <h2 class="max-w-xl text-balance text-[clamp(2rem,4.5vw,3.5rem)] font-medium leading-[1.05] tracking-[-0.035em]">
+        Un projet à discuter ?
+      </h2>
+      <div class="max-w-sm">
+        <p class="text-[15px] leading-7 text-muted-foreground">
+          Décrivez le problème, même approximativement. On répond avec une première lecture technique et
+          les questions qui nous manquent pour chiffrer.
+        </p>
+        <a
+          href="mailto:contact@ferrislabs.fr"
+          class="mt-5 inline-flex items-center gap-2 bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+        >
+          contact@ferrislabs.fr
+          <Icon name="mdi:chevron-right" class="size-4" />
+        </a>
+      </div>
+    </div>
+
+    <nav aria-label="Pied de page" class="grid grid-cols-2 border-b border-border md:grid-cols-3">
+      {columns.map((column) => (
+        <div class="border-b border-r border-border px-5 py-8 last:col-span-2 last:border-r-0 sm:px-8 md:border-b-0 md:last:col-span-1">
+          <p class="font-pixel text-[11px] uppercase tracking-[0.08em] text-muted-foreground">{column.title}</p>
+          <ul class="mt-4">
+            {column.links.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  class="inline-block py-1.5 text-sm text-foreground/80 transition-colors hover:text-foreground"
+                  {...(link.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </nav>
+
+    <div class="px-5 pt-16 sm:px-8">
+      <FooterWordmark client:visible />
+    </div>
+
+    <p class="flex flex-wrap items-center justify-between gap-3 px-5 py-6 text-xs text-muted-foreground sm:px-8">
+      <span>© {new Date().getFullYear()} FerrisLabs. Nos produits sont open source, sous licence Apache 2.0.</span>
+      <span class="font-pixel uppercase">Fait en Rust</span>
+    </p>
+  </div>
+</footer>

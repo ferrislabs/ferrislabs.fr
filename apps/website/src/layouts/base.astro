@@ -32,14 +32,17 @@ const thumbnailUrl = thumbnail ?? siteConfig.thumbnail
     <title>{formatTitle(siteConfig, title)}</title>
     <ClientRouter />
     <script is:inline>
-      // Thème clair fixe : on retire toute classe .dark éventuellement
-      // persistée par une visite antérieure.
-      document.documentElement.classList.remove('dark')
-    </script>
-    <script is:inline>
-      document.addEventListener('astro:after-swap', function () {
-        document.documentElement.classList.remove('dark')
-      })
+      // Avant le premier rendu, pour éviter un flash clair en mode sombre.
+      // « system » (ou rien) suit la préférence du système.
+      ;(function () {
+        function apply() {
+          var stored = localStorage.getItem('theme')
+          var dark = stored === 'dark' || (stored !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches)
+          document.documentElement.classList.toggle('dark', dark)
+        }
+        apply()
+        document.addEventListener('astro:after-swap', apply)
+      })()
     </script>
   </head>
   <body class="min-h-screen antialiased">

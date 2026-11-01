@@ -1,324 +1,113 @@
 ---
-import { Icon } from 'astro-icon/components'
-import RepoActivityPanel from './repo-activity-panel.astro'
-import { HeroGrid } from './hero-grid'
-import { fetchRepoActivity } from '../lib/repo-activity'
+import { PixelSprite } from './pixel/pixel-sprite'
+import { cometCrab, crab } from './pixel/sprites'
+import { HeroSite } from './hero-site'
 
-const activity = await fetchRepoActivity({
-  owner: 'ferriskey',
-  repo: 'ferriskey',
-  token: import.meta.env.GITHUB_TOKEN ?? process.env.GITHUB_TOKEN,
-})
-
-const endIcons = ['mdi:language-rust', 'mdi:shield-key-outline', 'mdi:cube-outline']
+/**
+ * Le hero : une phrase, le crabe dedans, et en bas un chantier pixel où deux
+ * grues posent les blocs et les personnages des produits (hero-site.tsx). Le
+ * dernier mot de la phrase change toutes les quelques secondes, lettre par
+ * lettre.
+ */
+const words = ['open source.', 'en Rust.', 'en public.', 'souverain.']
 ---
 
-<!-- Haut sur desktop : le panneau interne se fige et la passation au scroll peut se jouer -->
-<section id="hero-scroll" class="relative border-b border-border lg:h-[190vh]">
-  <div
-    id="hero-sticky"
-    class="relative overflow-hidden lg:sticky lg:top-14 lg:h-[calc(100vh-3.5rem)]"
-  >
-    <!-- Aplat gris de droite : s'élargit pour prendre le hero au scroll -->
-    <div
-      id="hero-grey"
-      class="pointer-events-none absolute inset-y-0 right-0 z-0 hidden w-full bg-foreground/[0.035] lg:block"
-      style="transform: scaleX(0.37); transform-origin: right center; will-change: transform"
-      aria-hidden="true"
+<section aria-labelledby="hero-title" class="relative overflow-hidden border-b border-border">
+  <div class="hero-scene relative mx-auto flex min-h-[calc(100svh-3rem)] max-w-6xl flex-col items-center border-x border-border px-5 pt-[clamp(3rem,10vh,7rem)] text-center">
+    <h1
+      id="hero-title"
+      class="relative z-10 max-w-4xl text-[clamp(2.5rem,min(7vw,10.5vh),5.5rem)] font-medium leading-[1.02] tracking-[-0.04em] text-foreground"
     >
-    </div>
+      <span class="block reveal" style="animation-delay: 0.05s">
+        FerrisLabs
+        <PixelSprite sprite={crab} className="inline-block size-[0.8em] -translate-y-[0.06em] align-middle" />
+        fabrique
+      </span>
+      <span class="block reveal" style="animation-delay: 0.15s">du logiciel</span>
+      <!-- Sa propre ligne : le mot change de longueur sans faire bouger le hero. -->
+      <span class="block whitespace-nowrap reveal" style="animation-delay: 0.2s">
+        <span id="hero-word" class="inline-block text-primary" aria-live="polite">{words[0]}</span>
+      </span>
+    </h1>
 
-    <div class="relative z-[1] grid h-full w-full grid-cols-1 lg:grid-cols-[1.7fr_1fr]">
-      <!-- GAUCHE : titre puis panneau d'activité -->
-      <div class="flex flex-col">
-        <div
-          id="hero-title"
-          class="relative z-[1] flex items-end px-5 pt-12 pb-6 sm:px-8 lg:pt-16"
-        >
-          <h1 class="text-5xl font-semibold leading-[1.02] tracking-[-0.03em] text-foreground sm:text-6xl lg:text-7xl 2xl:text-8xl">
-            <span class="inline-block reveal-left" style="animation-delay: 0.05s">Du logiciel métier</span><br />
-            <span class="inline-block reveal-left" style="animation-delay: 0.18s">en Rust.</span>
-          </h1>
-        </div>
+    <p class="reveal relative z-10 mt-7 max-w-xl text-pretty text-lg leading-8 text-muted-foreground" style="animation-delay: 0.3s">
+      Ferriskey, Mestier et FerrisTrace. Trois produits dont tout le code est sur GitHub, du
+      premier commit à la mise en production.
+    </p>
 
-        <div
-          id="hero-board"
-          class="flex min-h-0 flex-1 flex-col border-r border-border px-5 pb-6 sm:px-8"
-        >
-          <div class="reveal-fade max-w-xl shrink-0" style="animation-delay: 0.3s">
-            <RepoActivityPanel activity={activity} compact />
-          </div>
-
-          <!-- Plateau de tuiles : aller-retour entre l'état dispersé et le
-               crabe du logo. min-h-0 pour qu'il puisse vraiment se réduire
-               dans le conteneur flex plutôt que de le faire déborder. -->
-          <div class="reveal-fade mt-3 min-h-0 flex-1" style="animation-delay: 0.45s">
-            <HeroGrid client:only="react" />
-          </div>
-        </div>
-      </div>
-
-      <!-- DROITE : accroche abaissée -->
-      <div
-        id="hero-right"
-        class="relative z-[2] flex flex-col justify-between gap-10 px-5 py-10 sm:px-8 lg:pt-24"
-      >
-        <div>
-          <!-- Ce texte descend au centre et grossit pour devenir le titre final -->
-          <div id="hero-lead-wrap" style="transform-origin: left center">
-            <p class="reveal-right max-w-md text-lg/8 text-foreground sm:text-xl/8 2xl:text-2xl/9" style="animation-delay: 0.35s">
-              On conçoit des applications sur-mesure et les architectures
-              d'identité qui vont avec.
-            </p>
-          </div>
-
-          <!-- CTA mobile : sur desktop, ce sont les boutons de la passation -->
-          <div class="mt-7 flex flex-wrap gap-3 lg:hidden">
-            <a
-              href="mailto:contact@ferrislabs.fr"
-              class="inline-flex items-center gap-2 bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
-            >
-              <span>Nous écrire</span>
-              <Icon name="mdi:chevron-right" class="size-4.5" />
-            </a>
-            <a
-              href="https://github.com/ferrislabs"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 border border-border px-5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-foreground/[0.04]"
-            >
-              <Icon name="mdi:github" class="size-4.5" />
-              <span>Voir sur GitHub</span>
-            </a>
-          </div>
-        </div>
-
-        <!-- Encart « à la une » : la dernière version de Ferriskey -->
-        <div data-hero-out style="will-change: transform">
-          <div class="reveal-right" style="animation-delay: 0.7s">
-            <p class="mb-3 font-pixel text-[11px] uppercase tracking-[0.08em] text-muted-foreground">
-              À la une
-            </p>
-            <a
-              href="https://github.com/ferriskey/ferriskey/releases"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="group flex items-center gap-3 border border-border bg-card p-3 transition-colors hover:bg-foreground/[0.03]"
-            >
-              <span class="flex size-11 shrink-0 items-center justify-center surface-brand text-white">
-                <Icon name="mdi:rocket-launch-outline" class="size-5" />
-              </span>
-              <span class="min-w-0 flex-1">
-                <span class="block font-pixel text-[10px] uppercase text-primary">
-                  Nouveauté
-                </span>
-                <span class="block truncate text-sm font-medium text-foreground">
-                  Ferriskey {activity.release?.tag ?? 'est en ligne'}
-                </span>
-              </span>
-              <Icon name="mdi:chevron-right" class="size-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Icônes qui apparaissent une à une au-dessus du titre final (desktop) -->
-    <div id="hero-endicons" class="pointer-events-none absolute z-10 hidden gap-3 lg:flex">
-      {endIcons.map((name) => (
-        <span
-          class="hero-endicon flex size-12 items-center justify-center border border-border bg-card text-primary"
-          style="opacity: 0"
-        >
-          <Icon name={name} class="size-6" />
-        </span>
-      ))}
-    </div>
-
-    <!-- Bloc qui glisse depuis la droite en fin de passation (desktop) -->
-    <div
-      id="hero-endcell"
-      class="pointer-events-none absolute bottom-[12%] right-[3%] top-[12%] z-10 hidden w-[30%] lg:block"
-      style="transform: translateX(125%)"
+    <a
+      href="https://ferristrace.dev"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="reveal group relative z-10 mt-8 inline-flex items-center gap-3 border border-border bg-card py-1.5 pl-1.5 pr-3 text-sm text-foreground transition-colors hover:bg-foreground/[0.04]"
+      style="animation-delay: 0.45s"
     >
-      <div class="relative h-full w-full overflow-hidden surface-brand">
-        <div class="absolute inset-0 bg-pixel-grid opacity-60" aria-hidden="true"></div>
-        <div class="relative flex h-full flex-col justify-between p-6 text-white">
-          <Icon name="mdi:language-rust" class="size-7" />
-          <div>
-            <p class="font-pixel text-[11px] uppercase tracking-[0.08em] text-white/70">
-              Open source · Rust
-            </p>
-            <p class="mt-2 text-xl font-semibold leading-snug">
-              Le code de ce qu'on sait faire est public.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+      <span class="flex size-7 items-center justify-center bg-indigo-500/10">
+        <PixelSprite sprite={cometCrab} className="h-4 w-5" />
+      </span>
+      <span><span class="font-pixel text-[11px] uppercase text-primary">Nouveau</span> · FerrisTrace, l'observabilité open source</span>
+      <span class="transition-transform group-hover:translate-x-0.5" aria-hidden="true">→</span>
+    </a>
 
-    <!-- Boutons qui arrivent par la gauche sous le titre final (desktop) -->
-    <div
-      id="hero-endbuttons"
-      class="pointer-events-none absolute z-10 hidden flex-wrap gap-3 lg:flex"
-      style="transform: translateX(-120%)"
-    >
-      <a
-        href="mailto:contact@ferrislabs.fr"
-        class="pointer-events-auto inline-flex items-center gap-2 bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
-      >
-        <span>Nous écrire</span>
-        <Icon name="mdi:chevron-right" class="size-4.5" />
-      </a>
-      <a
-        href="#ferriskey"
-        class="pointer-events-auto inline-flex items-center gap-2 border border-border bg-background px-5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-foreground/[0.04]"
-      >
-        <span>Voir Ferriskey</span>
-        <Icon name="mdi:arrow-right" class="size-4.5" />
-      </a>
-    </div>
+    <HeroSite client:load />
   </div>
 </section>
 
 <style>
-  @media (prefers-reduced-motion: reduce) and (min-width: 1024px) {
-    #hero-scroll { height: auto; }
-    #hero-sticky { position: static; height: auto; }
-    #hero-endicons,
-    #hero-endcell,
-    #hero-endbuttons { display: none; }
+  .hero-scene {
+    /* Suit aussi la hauteur : le chantier doit tenir dans le premier écran. */
+    --u: clamp(40px, min(7vw, 9vh), 88px);
+    padding-bottom: calc(var(--u) * 3.1);
+  }
+
+  /* Les lettres du mot qui change tombent une à une. */
+  :global(.hero-letter) {
+    display: inline-block;
+    animation: hero-letter 0.45s cubic-bezier(0.3, 1.4, 0.5, 1) both;
+  }
+  @keyframes hero-letter {
+    from {
+      opacity: 0;
+      transform: translateY(-0.6em);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.hero-letter) {
+      animation: none;
+    }
   }
 </style>
 
-<script>
-  // Passation au scroll : le titre sort par le haut, le panneau part en
-  // diagonale, l'aplat gris s'élargit, et l'accroche de droite descend au
-  // centre en grossissant pour devenir le titre final.
-  // Une fois l'état final atteint, il est simplement tenu : c'est le
-  // décollement naturel du panneau figé qui enchaîne sur la section suivante.
-  // Desktop uniquement, neutralisé si l'utilisateur limite les animations.
-  function initHeroScroll() {
-    const section = document.getElementById('hero-scroll')
-    const sticky = document.getElementById('hero-sticky')
-    const title = document.getElementById('hero-title')
-    const board = document.getElementById('hero-board')
-    const grey = document.getElementById('hero-grey')
-    const right = document.getElementById('hero-right')
-    const wrap = document.getElementById('hero-lead-wrap')
-    const endicons = document.getElementById('hero-endicons')
-    const endcell = document.getElementById('hero-endcell')
-    const endbtns = document.getElementById('hero-endbuttons')
-    if (!section || !sticky || !title || !board || !grey || !right || !wrap) return
+<script define:vars={{ words }}>
+  function initHeroWord() {
+    const el = document.getElementById('hero-word')
+    if (!el || el.dataset.ready) return
+    el.dataset.ready = '1'
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
-    const outs = Array.from(section.querySelectorAll<HTMLElement>('[data-hero-out]'))
-    const icons = endicons ? (Array.from(endicons.children) as HTMLElement[]) : []
-    const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v))
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const GROW = 0.9
-
-    let dx = 0, dy = 0, grey0 = 0.37, boardShift = 800, titleShift = 600
-    let ticking = false
-
-    function offsetWithinSticky(el: HTMLElement) {
-      let x = 0, y = 0
-      let n: HTMLElement | null = el
-      while (n && n !== sticky) {
-        x += n.offsetLeft; y += n.offsetTop
-        n = n.offsetParent as HTMLElement | null
-      }
-      return { x, y }
+    let index = 0
+    const render = (word) => {
+      el.textContent = ''
+      ;[...word].forEach((char, i) => {
+        const span = document.createElement('span')
+        span.className = 'hero-letter'
+        span.style.animationDelay = `${i * 0.035}s`
+        span.textContent = char === ' ' ? ' ' : char
+        el.appendChild(span)
+      })
     }
-
-    function measure() {
-      const W = sticky!.clientWidth
-      const H = sticky!.clientHeight
-      const targetLeft = Math.round(W * 0.03) + 12
-      const o = offsetWithinSticky(wrap!)
-      dx = targetLeft - o.x
-      dy = H * 0.5 - (o.y + wrap!.offsetHeight / 2)
-      grey0 = right!.offsetWidth / W
-      boardShift = H + board!.offsetHeight
-      titleShift = title!.offsetTop + title!.offsetHeight + 24
-
-      const titleHalf = (wrap!.offsetHeight * (1 + GROW)) / 2
-      if (endicons) {
-        endicons.style.left = `${targetLeft}px`
-        endicons.style.top = `${Math.max(24, H * 0.5 - titleHalf - 64)}px`
-      }
-      if (endbtns) {
-        endbtns.style.left = `${targetLeft}px`
-        endbtns.style.top = `${H * 0.5 + titleHalf + 28}px`
-      }
-    }
-
-    function reset() {
-      sticky!.style.opacity = ''
-      title!.style.transform = ''
-      board!.style.transform = ''
-      grey!.style.transform = `scaleX(${grey0})`
-      wrap!.style.transform = ''
-      for (const el of outs) el.style.transform = ''
-      for (const ic of icons) ic.style.opacity = '0'
-      if (endcell) endcell.style.transform = 'translateX(125%)'
-      if (endbtns) endbtns.style.transform = 'translateX(-120%)'
-    }
-
-    function update() {
-      ticking = false
-      const desktop = window.matchMedia('(min-width: 1024px)').matches
-      if (!desktop || reduce.matches) { reset(); return }
-
-      const range = window.innerHeight * 0.6
-      const p = clamp(-section!.getBoundingClientRect().top / range, 0, 1)
-
-      const tp = clamp(p / 0.35, 0, 1)
-      title!.style.transform = tp === 0 ? '' : `translate(0, ${-tp * titleShift}px)`
-
-      board!.style.transform = p === 0 ? '' : `translate(${-p * 105}%, ${-p * boardShift}px)`
-
-      const greyScale = clamp(1 - (1 - grey0) * (1 - 1.05 * p), grey0, 1)
-      grey!.style.transform = `scaleX(${greyScale})`
-
-      wrap!.style.transform = `translate(${dx * p}px, ${dy * p}px) scale(${1 + p * GROW})`
-
-      for (const el of outs) el.style.transform = `translate3d(${p * 130}%, 0, 0)`
-
-      if (endcell) {
-        const ep = clamp((p - 0.45) / 0.55, 0, 1)
-        endcell.style.transform = `translateX(${(1 - ep) * 125}%)`
-      }
-      if (endbtns) {
-        const bp = clamp((p - 0.82) / 0.18, 0, 1)
-        endbtns.style.transform = `translateX(${(1 - bp) * -120}%)`
-      }
-      // Sortie en fondu sur les derniers 22 % de la section : le panneau se
-      // dissout au lieu d'être poussé net par la section suivante.
-      for (let i = 0; i < icons.length; i++) {
-        const t0 = 0.72 + i * 0.07
-        const ip = clamp((p - t0) / 0.09, 0, 1)
-        icons[i].style.opacity = `${ip}`
-        icons[i].style.transform = `translateY(${(1 - ip) * 14}px)`
-      }
-    }
-
-    function onScroll() {
-      if (!ticking) { ticking = true; requestAnimationFrame(update) }
-    }
-
-    measure()
-    update()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', () => { measure(); update() })
-    // Les polices décalent la mise en page : on remesure dès qu'elles sont
-    // prêtes, sinon dx/dy restent faux jusqu'au filet de sécurité.
-    if (document.fonts?.ready) {
-      document.fonts.ready.then(() => { measure(); update() })
-    }
-    window.setTimeout(() => { measure(); update() }, 1700)
-    reduce.addEventListener?.('change', update)
+    const timer = setInterval(() => {
+      if (!document.body.contains(el)) return clearInterval(timer)
+      index = (index + 1) % words.length
+      render(words[index])
+    }, 2800)
   }
 
-  initHeroScroll()
-  document.addEventListener('astro:after-swap', initHeroScroll)
+  initHeroWord()
+  document.addEventListener('astro:page-load', initHeroWord)
 </script>

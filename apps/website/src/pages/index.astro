@@ -3,57 +3,26 @@ import Base from '../layouts/base.astro'
 import { WebsiteNavbar } from '../components/website-navbar'
 import HeroSection from '../components/hero-section.astro'
 import TrustedBySection from '../components/trusted-by-section.astro'
-import FerriskeySpotlightSection from '../components/ferriskey-spotlight-section.astro'
-import MestierSpotlightSection from '../components/mestier-spotlight-section.astro'
-import ServicesSection from '../components/services-section.astro'
-import HighlightsSection from '../components/highlights-section.astro'
-import CtaSection from '../components/cta-section.astro'
-import ComplianceSection from '../components/compliance-section.astro'
+import { ManifestoSection } from '../components/manifesto-section'
+import { ProductsSection } from '../components/products-section'
+import MissionsSection from '../components/missions-section.astro'
 import TeamSection from '../components/team-section.astro'
-import { siteConfig } from '../config'
+import SiteFooter from '../components/site-footer.astro'
 ---
 
 <Base
   title="FerrisLabs"
-  description="FerrisLabs développe des logiciels métier en Rust et des architectures d'identité. Nous maintenons Ferriskey, une plateforme IAM open source, et Mestier, une alternative open source à Google Workspace pour les entreprises."
+  description="FerrisLabs fabrique du logiciel open source en Rust : Ferriskey pour l'identité, Mestier pour la gestion d'entreprise et FerrisTrace pour l'observabilité. Tout le code est public."
   thumbnail="/thumbnail.png"
 >
-  <WebsiteNavbar transition:persist />
-
-  <HeroSection />
-
-  <!-- Les filets verticaux ne courent qu'à partir d'ici : le hero a sa propre
-       grille asymétrique et n'est pas contraint au conteneur de contenu.
-       Positionnés en absolu dans ce bloc plutôt que fixés au viewport, pour
-       qu'ils démarrent exactement au haut de la bande « ils nous font confiance ». -->
-  <div class="relative">
-    <div
-      class="pointer-events-none absolute inset-0 z-30 hidden lg:block"
-      aria-hidden="true"
-    >
-      <div class="mx-auto h-full max-w-6xl border-x border-foreground/10"></div>
-    </div>
-
-  <TrustedBySection />
-  <FerriskeySpotlightSection />
-  <MestierSpotlightSection />
-  <ServicesSection />
-  <HighlightsSection />
-  <TeamSection />
-  <CtaSection />
-  <ComplianceSection />
-
-  <footer class="mx-auto max-w-6xl px-6 pb-10 pt-4">
-    <div class="border-t pt-8 text-sm text-muted-foreground flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-      <p>{siteConfig.name}. Nos projets sont open source, le code est sur GitHub.</p>
-      <div class="flex items-center gap-4">
-        <a href="#ferriskey" class="hover:text-foreground transition-colors">Ferriskey</a>
-        <a href="#mestier" class="hover:text-foreground transition-colors">Mestier</a>
-        <a href="#services" class="hover:text-foreground transition-colors">Ce qu'on fait</a>
-        <a href="#team" class="hover:text-foreground transition-colors">Équipe</a>
-        <a href={siteConfig.github} target="_blank" rel="noopener noreferrer" class="hover:text-foreground transition-colors">GitHub</a>
-      </div>
-    </div>
-  </footer>
-  </div>
+  <WebsiteNavbar client:load transition:persist />
+  <main>
+    <HeroSection />
+    <TrustedBySection />
+    <ProductsSection client:visible />
+    <ManifestoSection client:visible />
+    <MissionsSection />
+    <TeamSection />
+  </main>
+  <SiteFooter />
 </Base>

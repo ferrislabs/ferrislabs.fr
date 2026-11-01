@@ -3,11 +3,17 @@ import matter from 'gray-matter'
 import { readFile, readdir } from 'node:fs/promises'
 import { join } from 'node:path'
 import { generateThumbnail } from './generator'
+import { generatePixelCard, PIXEL_CARD_WIDTH, type PixelCardOptions } from './pixel-card'
 import { renderThumbnail, renderThumbnailToFile } from './renderer'
 
 export interface ThumbnailConfig {
   appName: string
   primaryColor?: string
+  /**
+   * Carte au style pixel de ferrislabs.fr, à la place du gabarit commun.
+   * Uniquement en mode `static` : toutes les pages reçoivent cette carte.
+   */
+  pixelCard?: PixelCardOptions
   content:
     | { type: 'collection'; dir: string }
     | {
@@ -117,14 +123,16 @@ export function thumbnailIntegration(config: ThumbnailConfig): AstroIntegration 
                         await getContentIndex(),
                       )
 
-                      const svg = await generateThumbnail({
-                        headline,
-                        title,
-                        description,
-                        primaryColor: config.primaryColor,
-                      })
+                      const svg = config.pixelCard
+                        ? await generatePixelCard(config.pixelCard)
+                        : await generateThumbnail({
+                            headline,
+                            title,
+                            description,
+                            primaryColor: config.primaryColor,
+                          })
 
-                      const png = await renderThumbnail(svg)
+                      const png = await renderThumbnail(svg, config.pixelCard ? PIXEL_CARD_WIDTH : undefined)
 
                       cache.set(req.url, png)
                       logger.info(`Dev thumbnail generated for ${req.url}`)
@@ -151,14 +159,16 @@ export function thumbnailIntegration(config: ThumbnailConfig): AstroIntegration 
         if (config.content.type === 'static') {
           for (const page of config.content.pages) {
             try {
-              const svg = await generateThumbnail({
-                title: page.title,
-                description: page.description,
-                primaryColor: config.primaryColor,
-              })
+              const svg = config.pixelCard
+                ? await generatePixelCard(config.pixelCard)
+                : await generateThumbnail({
+                    title: page.title,
+                    description: page.description,
+                    primaryColor: config.primaryColor,
+                  })
               const pagePath = page.path === '/' ? '' : page.path.replace(/^\//, '')
               const outputPath = join(outputDir, pagePath, 'thumbnail.png')
-              await renderThumbnailToFile(svg, outputPath)
+              await renderThumbnailToFile(svg, outputPath, config.pixelCard ? PIXEL_CARD_WIDTH : undefined)
               logger.info(`Thumbnail generated for ${page.path}`)
             } catch (error) {
               logger.warn(`Failed to generate thumbnail for ${page.path}: ${error}`)
