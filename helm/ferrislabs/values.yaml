@@ -16,7 +16,7 @@ serviceAccount:
   name: ""
 
 ingress:
-  enabled: true
+  enabled: false
   className: traefik
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
@@ -24,17 +24,16 @@ ingress:
     enabled: true
 
 # Kubernetes Gateway API support, as an alternative or complement to ingress.
-# Disabled by default so existing installs keep using ingress unchanged.
 gatewayApi:
-  enabled: false
+  enabled: true
   annotations: {}
 
   # References to the Gateway(s) each HTTPRoute attaches to.
+  # Attaches to the pre-existing "ferrislabs-gateway" Gateway (namespace default).
   # Leave empty to attach to the Gateway created below (gateway.create: true).
-  parentRefs: []
-    # - name: my-gateway
-    #   namespace: gateway-system
-    #   sectionName: https
+  parentRefs:
+    - name: ferrislabs-gateway
+      namespace: default
 
   # Optionally have this chart create the Gateway resource itself.
   # Set to false to attach to a Gateway managed elsewhere in the cluster.
@@ -57,7 +56,7 @@ apps:
 
     image:
       repository: ghcr.io/ferrislabs/ferrislabs-website
-      tag: sha-f7de2a7
+      tag: sha-94b6859
       pullPolicy: IfNotPresent
 
     containerPort: 8080
@@ -84,7 +83,7 @@ apps:
       annotations: {}
 
     ingress:
-      enabled: true
+      enabled: false
       host: ferrislabs.fr
       path: /
       pathType: Prefix
@@ -96,6 +95,7 @@ apps:
     httpRoute:
       enabled: true
       hostnames:
+        - landing.ferrislabs.fr
         - ferrislabs.fr
       path: /
       pathType: PathPrefix
